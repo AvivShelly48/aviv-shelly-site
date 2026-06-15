@@ -27,6 +27,7 @@ export default function CustomCursor() {
     };
 
     const onEnter = (e) => {
+      if (!e.target || typeof e.target.closest !== 'function') return;
       const el = e.target.closest('a, button, [data-cursor]');
       if (el) {
         setIsHovering(true);
@@ -34,6 +35,7 @@ export default function CustomCursor() {
       }
     };
     const onLeave = (e) => {
+      if (!e.target || typeof e.target.closest !== 'function') return;
       const el = e.target.closest('a, button, [data-cursor]');
       if (el) {
         setIsHovering(false);
