@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@200;300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,34 +6,34 @@
 
 @layer base {
   :root {
-    --background: 40 7% 95%;
-    --foreground: 0 0% 10%;
-    --card: 40 7% 95%;
-    --card-foreground: 0 0% 10%;
-    --popover: 40 7% 95%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 18 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 40 2% 38%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 40 5% 90%;
-    --muted-foreground: 40 2% 38%;
-    --accent: 18 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --background: 60 14% 97%;
+    --foreground: 150 18% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 150 18% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 18% 12%;
+    --primary: 152 32% 22%;
+    --primary-foreground: 60 14% 97%;
+    --secondary: 60 9% 92%;
+    --secondary-foreground: 150 18% 12%;
+    --muted: 60 9% 92%;
+    --muted-foreground: 150 8% 40%;
+    --accent: 40 60% 52%;
+    --accent-foreground: 150 18% 12%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 40 5% 85%;
-    --input: 40 5% 85%;
-    --ring: 18 100% 50%;
-    --chart-1: 18 100% 50%;
-    --chart-2: 173 58% 39%;
+    --border: 150 10% 88%;
+    --input: 150 10% 88%;
+    --ring: 152 32% 22%;
+    --chart-1: 152 32% 22%;
+    --chart-2: 40 60% 52%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0rem;
-    --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --radius: 0.25rem;
+    --font-heading: 'Frank Ruhl Libre', ui-serif, Georgia, serif;
+    --font-body: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Frank Ruhl Libre', ui-serif, Georgia, serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -46,27 +46,27 @@
   }
 
   .dark {
-    --background: 0 0% 5%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 18 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 20%;
-    --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 18 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --background: 150 20% 8%;
+    --foreground: 60 14% 95%;
+    --card: 150 18% 11%;
+    --card-foreground: 60 14% 95%;
+    --popover: 150 18% 11%;
+    --popover-foreground: 60 14% 95%;
+    --primary: 152 30% 45%;
+    --primary-foreground: 150 20% 8%;
+    --secondary: 150 12% 18%;
+    --secondary-foreground: 60 14% 95%;
+    --muted: 150 12% 18%;
+    --muted-foreground: 150 8% 60%;
+    --accent: 40 60% 52%;
+    --accent-foreground: 150 20% 8%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 18 100% 50%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
+    --border: 150 12% 20%;
+    --input: 150 12% 20%;
+    --ring: 152 30% 45%;
+    --chart-1: 152 30% 45%;
+    --chart-2: 40 60% 52%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
@@ -90,85 +90,11 @@
   }
 }
 
-/* Custom cursor */
-.cursor-lens {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #1A1A1A;
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
-              height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.3s ease,
-              mix-blend-mode 0.3s ease;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
-  background-color: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: white;
-}
-
-.cursor-lens.hovering {
-  width: 80px;
-  height: 80px;
-  background-color: rgba(255, 255, 255, 0.9);
-  mix-blend-mode: difference;
-}
-
-/* Hide default cursor */
-body {
-  cursor: none !important;
-}
-a, button, input, textarea, select {
-  cursor: none !important;
-}
-
-/* Glass rule separators */
-.glass-rule {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-}
-
-/* Typewriter animation */
-@keyframes typewriter-reveal {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0 0 0); }
-}
-
-.typewriter-line {
-  clip-path: inset(0 100% 0 0);
-}
-.typewriter-line.revealed {
-  animation: typewriter-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Smooth scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Selection color */
 ::selection {
-  background-color: #FF4D00;
-  color: white;
-}
-
-@media (max-width: 768px) {
-  .cursor-lens {
-    display: none !important;
-  }
-  body {
-    cursor: auto !important;
-  }
-  a, button, input, textarea, select {
-    cursor: auto !important;
-  }
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }

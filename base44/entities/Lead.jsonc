@@ -1,0 +1,38 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Full name of the lead"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "interest": {
+      "type": "string",
+      "enum": [
+        "urban_renewal",
+        "affordable_housing",
+        "construction",
+        "landowner",
+        "other"
+      ],
+      "default": "other",
+      "description": "Area of interest"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message from the lead"
+    }
+  },
+  "required": [
+    "name",
+    "phone"
+  ]
+}
