@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 
-const HERO_IMG = 'https://media.base44.com/images/public/6a2ff9d8f0f6cef4ef4c3d65/a0cb095fc_generated_image.png';
+const HERO_IMG = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/dd85c2782_night-web.jpg';
 
 export default function Hero() {
   const go = (href) => document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
@@ -40,7 +40,7 @@ export default function Hero() {
               <ArrowLeft className="w-4 h-4" />
             </button>
             <span className="text-primary-foreground/70 text-sm">
-              הלילך 7 בשיווק · יבנה
+              הר אביטל · מגדל בוטיק בשיווק
             </span>
           </div>
         </motion.div>

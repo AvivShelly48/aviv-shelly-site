@@ -1,18 +1,20 @@
 import { motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
 
-const NEIGHBORHOOD = 'https://media.base44.com/images/public/6a2ff9d8f0f6cef4ef4c3d65/fb39d1941_generated_image.png';
-const RENDER = 'https://media.base44.com/images/public/6a2ff9d8f0f6cef4ef4c3d65/2dc3d2911_generated_image.png';
-const DONE = 'https://media.base44.com/images/public/6a2ff9d8f0f6cef4ef4c3d65/7fd257515_generated_image.png';
+const HAR_AVITAL = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/cad236d07_day-web.jpg';
+const KEREN = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/d6298c8c4_proj-keren.jpg';
+const TZIYONUT = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/f095f1f51_proj-142.jpg';
+const LILAC = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/f816a27b4_proj-lilac.jpg';
+const SHAAREI = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/38805d621_proj-independence.jpg';
 
 const projects = [
-  { title: 'הלילך 7', city: 'יבנה', status: 'בשיווק', img: RENDER, big: true,
-    desc: 'מגדל מגורים חדש בלב יבנה — דירות 3–5 חדרים עם נוף פתוח.' },
-  { title: 'העצמאות 28–32', city: 'פינוי-בינוי', status: 'בשיווק', img: NEIGHBORHOOD, big: true,
-    desc: 'החלפת מבנים ישנים במגדלי מגורים חדשים, והשבחת הנכס של כל בעל דירה.' },
-  { title: 'הלילך 5', city: 'יבנה', status: 'בבנייה', img: DONE },
-  { title: 'הציונות 10 · סיטי פארק', city: 'אשדוד', status: 'התחדשות', img: NEIGHBORHOOD },
-  { title: 'קרן היסוד · מתחם הצעירים', city: 'אשדוד', status: 'פינוי-בינוי', img: RENDER },
+  { title: 'הר אביטל', city: 'מגדל מגורים בוטיק', status: 'בשיווק', img: HAR_AVITAL, big: true,
+    desc: 'פרויקט הדגל שלנו — חזית פחם אלגנטית ומרפסות מרחפות. תאורת LED לינארית מדגישה כל קומה; בלילה הבניין זוהר.' },
+  { title: 'קרן היסוד · מתחם הצעירים', city: 'אשדוד', status: 'בשיווק', img: KEREN, big: true,
+    desc: 'התחדשות עירונית — 144 יחידות דיור חדשות לצד 144 דירות מתחדשות, בבניין בן 7 קומות.' },
+  { title: 'הציונות 10 · סיטי פארק', city: 'אשדוד', status: 'בשיווק', img: TZIYONUT },
+  { title: 'הלילך', city: 'יבנה', status: 'בשיווק', img: LILAC },
+  { title: 'שערי העיר · רובע 9', city: 'אשדוד', status: 'בתכנון', img: SHAAREI },
 ];
 
 function Card({ p, index }) {
