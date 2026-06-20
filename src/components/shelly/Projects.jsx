@@ -10,15 +10,20 @@ const LILAC = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/pub
 const SHAAREI = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/38805d621_proj-independence.jpg';
 
 const projects = [
-  { title: 'הר אביטל', city: 'מגדל מגורים בוטיק', status: 'בשיווק', img: HAR_AVITAL, big: true,
-    desc: 'פרויקט הדגל שלנו — חזית פחם אלגנטית ומרפסות מרחפות. תאורת LED לינארית מדגישה כל קומה; בלילה הבניין זוהר.' },
-  { title: 'עצמאות · פינוי-בינוי', city: 'יבנה', status: 'בביצוע', img: INDEPENDENCE, big: true,
-    desc: 'פרויקט פינוי-בינוי בלב יבנה — חידוש מתחם מגורים שלם, דירות חדשות ומרחב ציבורי מתחדש.' },
-  { title: 'מיכאל', city: 'מתחם מגורי יוקרה', status: 'בשיווק', img: MICHAEL },
-  { title: 'קרן היסוד · מתחם הצעירים', city: 'אשדוד', status: 'בשיווק', img: KEREN },
-  { title: 'הציונות 10 · סיטי פארק', city: 'אשדוד', status: 'בשיווק', img: TZIYONUT },
-  { title: 'הלילך', city: 'יבנה', status: 'בשיווק', img: LILAC },
-  { title: 'שערי העיר · רובע 9', city: 'אשדוד', status: 'בתכנון', img: SHAAREI },
+  { title: 'הר אביטל', city: 'מגדל מגורים בוטיק · שפה אדריכלית עכשווית', status: 'בשיווק', img: HAR_AVITAL, big: true,
+    desc: 'חזית פחם אלגנטית, עמוד עץ חם ומרפסות מרחפות. תאורת LED לינארית שמדגישה כל קומה — בלילה הבניין זוהר.' },
+  { title: 'עצמאות · פינוי-בינוי', city: 'יבנה', status: 'בביצוע', img: INDEPENDENCE,
+    stats: ['202 יח״ד חדשות', '3 מגדלי מגורים'] },
+  { title: 'מיכאל', city: 'מתחם מגורי יוקרה', status: 'בשיווק', img: MICHAEL,
+    stats: ['3 מגדלי מגורים', 'פארק מרחב ירוק'] },
+  { title: 'קרן היסוד · מתחם הצעירים', city: 'אשדוד', status: 'בשיווק', img: KEREN,
+    stats: ['144 דירות מתחדשות', '138 דירות חדשות'] },
+  { title: 'הציונות 10 · סיטי פארק', city: 'אשדוד', status: 'בשיווק', img: TZIYONUT,
+    stats: ['9 קומות', '3 בנייני מגורים'] },
+  { title: 'הלילך', city: 'יבנה', status: 'בשיווק', img: LILAC,
+    stats: ['6 בניינים ברחוב', '3+3 תמ״א 38 ופינוי-בינוי'] },
+  { title: 'שערי העיר · רובע 9', city: 'אשדוד', status: 'בתכנון', img: SHAAREI,
+    stats: ['כ-240 יח״ד', 'מגורים + תעסוקה'] },
 ];
 
 function Card({ p, index }) {
@@ -42,6 +47,15 @@ function Card({ p, index }) {
         </div>
         <h3 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">{p.title}</h3>
         {p.desc && <p className="text-primary-foreground/80 text-sm mt-2 max-w-md">{p.desc}</p>}
+        {p.stats && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {p.stats.map((s) => (
+              <span key={s} className="bg-primary-foreground/15 text-primary-foreground text-xs px-2.5 py-1 rounded-sm">
+                {s}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   );
