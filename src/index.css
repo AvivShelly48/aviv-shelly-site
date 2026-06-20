@@ -6,20 +6,20 @@
 
 @layer base {
   :root {
-    --background: 60 14% 97%;
-    --foreground: 150 18% 12%;
+    --background: 44 18% 93%;
+    --foreground: 260 8% 9%;
     --card: 0 0% 100%;
     --card-foreground: 150 18% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 150 18% 12%;
-    --primary: 152 32% 22%;
-    --primary-foreground: 60 14% 97%;
-    --secondary: 60 9% 92%;
-    --secondary-foreground: 150 18% 12%;
-    --muted: 60 9% 92%;
-    --muted-foreground: 150 8% 40%;
-    --accent: 40 60% 52%;
-    --accent-foreground: 150 18% 12%;
+    --primary: 97 49% 41%;
+    --primary-foreground: 44 18% 96%;
+    --secondary: 44 14% 88%;
+    --secondary-foreground: 260 8% 9%;
+    --muted: 44 12% 88%;
+    --muted-foreground: 40 6% 45%;
+    --accent: 97 49% 41%;
+    --accent-foreground: 44 18% 96%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 150 10% 88%;
@@ -95,6 +95,53 @@ html {
 }
 
 ::selection {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  background-color: hsl(var(--primary) / 0.2);
 }
+
+/* ============ SHELLY URBAN — bespoke cinematic styles ============ */
+:root {
+  --su-bg: #f1efea;
+  --su-ink: #17151a;
+  --su-ink-dim: #6b675f;
+  --su-ink-faint: #a39e95;
+  --su-green: #5f9c36;
+  --su-green-deep: #447327;
+  --su-hair: rgba(23, 21, 26, 0.12);
+  --su-hair-soft: rgba(23, 21, 26, 0.07);
+  --su-serif: 'Frank Ruhl Libre', 'Times New Roman', serif;
+  --su-sans: 'Heebo', system-ui, sans-serif;
+}
+
+.su-serif { font-family: var(--su-serif); }
+.su-sans { font-family: var(--su-sans); }
+
+/* Reveal-on-scroll */
+.su-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1);
+}
+.su-reveal.su-in { opacity: 1; transform: none; }
+.su-d1 { transition-delay: .12s; }
+.su-d2 { transition-delay: .24s; }
+.su-d3 { transition-delay: .36s; }
+
+/* Film grain overlay */
+.su-grain {
+  position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Eyebrow label */
+.su-eyebrow {
+  font-family: var(--su-sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .26em; text-transform: uppercase; color: var(--su-green);
+}
+.su-scene-num {
+  font-family: var(--su-serif); font-size: 13px; letter-spacing: .3em; color: var(--su-ink-dim);
+}
+
+/* Animated underline link */
+.su-more { position: relative; display: inline-flex; align-items: center; gap: 10px; font-weight: 500; }
+.su-more .su-ln { width: 26px; height: 1px; background: var(--su-green); transition: width .4s ease; }
+.su-more:hover .su-ln { width: 44px; }

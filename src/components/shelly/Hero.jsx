@@ -1,50 +1,126 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
-const HERO_IMG = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/dd85c2782_night-web.jpg';
+const DAY = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/cad236d07_day-web.jpg';
+const NIGHT = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/dd85c2782_night-web.jpg';
+
+const chapters = [
+  {
+    eyebrow: 'נדל״ן · התחדשות עירונית · בנייה',
+    h1: ['כאן ייבנה', 'הבית הבא שלכם.'],
+    cta: 'גלו את הפרויקטים',
+  },
+  { num: '01', em: 'יוקרה', rest: 'רואים.', text: 'בכל פרט — בחזית, בלובי ובמרפסת.' },
+  { num: '02', em: 'מצוינות', rest: 'מרגישים.', text: 'בגימור, בחומרים ובאיכות הבנייה.' },
+  { num: '03', em: 'ביטחון', rest: 'חשים.', text: 'ליווי מלא — מהתכנון ועד מסירת המפתח.' },
+  {
+    num: 'הלובי · קומת הכניסה',
+    em: 'הביתה.',
+    pre: 'ברוכים הבאים',
+    text: 'כאן מתחילים החיים החדשים שלכם.',
+    cta: 'כניסה לפרויקטים',
+  },
+];
 
 export default function Hero() {
+  const wrapRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = wrapRef.current;
+      if (!el) return;
+      const total = el.offsetHeight - window.innerHeight;
+      const scrolled = Math.min(Math.max(-el.getBoundingClientRect().top, 0), total);
+      setProgress(total > 0 ? scrolled / total : 0);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
+  const active = Math.min(chapters.length - 1, Math.floor(progress * chapters.length));
+  // night fade-in across scroll
+  const nightOpacity = Math.min(1, Math.max(0, (progress - 0.15) / 0.6));
+
   const go = (href) => document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <section id="top" className="relative min-h-screen flex items-center overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={HERO_IMG} alt="פרויקט מגורים" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-l from-primary/95 via-primary/80 to-primary/40" />
-      </div>
+    <div ref={wrapRef} id="top" className="relative" style={{ height: '420vh' }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        {/* Building day/night */}
+        <div className="absolute inset-0">
+          <img src={DAY} alt="הר אביטל — הדמיה" className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={NIGHT}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+            style={{ opacity: nightOpacity }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/45 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+        </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-24">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-2xl"
-        >
-          <span className="text-accent text-sm tracking-[0.2em] uppercase font-body">
-            נדל״ן · התחדשות עירונית · בנייה
-          </span>
-          <h1 className="font-display text-5xl md:text-7xl font-bold text-primary-foreground mt-5 leading-tight">
-            כאן ייבנה<br />הבית <em className="text-accent not-italic">הבא שלכם.</em>
-          </h1>
-          <p className="text-primary-foreground/85 text-lg mt-6 leading-relaxed max-w-xl">
-            שלי אורבן מתמחה בהתחדשות עירונית, בפרויקטי מחיר למשתכן ובבנייה למגורים — מהתכנון
-            ועד מסירת המפתח, תחת קורת גג אחת.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-4 mt-9">
-            <button
-              onClick={() => go('#projects')}
-              className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-7 py-3.5 rounded-sm font-medium hover:bg-accent/90 transition-colors"
+        {/* Chapter panels */}
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex items-center">
+          {chapters.map((c, i) => (
+            <div
+              key={i}
+              className="absolute inset-x-6 md:inset-x-0 md:px-6 max-w-2xl transition-all duration-700"
+              style={{
+                opacity: active === i ? 1 : 0,
+                transform: active === i ? 'translateY(0)' : 'translateY(24px)',
+                pointerEvents: active === i ? 'auto' : 'none',
+              }}
             >
-              לצפייה בפרויקטים
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <span className="text-primary-foreground/70 text-sm">
-              הר אביטל · מגדל בוטיק בשיווק
-            </span>
+              {c.eyebrow && <div className="su-eyebrow text-white/90">{c.eyebrow}</div>}
+              {c.num && <div className="su-serif text-white/70 text-sm tracking-[0.2em] mb-3">{c.num}</div>}
+
+              {c.h1 ? (
+                <h1 className="su-serif text-white font-bold leading-[1.05] mt-5 text-5xl md:text-7xl">
+                  {c.h1[0]}
+                  <br />
+                  <em className="not-italic text-[#84bf52]">{c.h1[1]}</em>
+                </h1>
+              ) : (
+                <h2 className="su-serif text-white font-medium leading-[1.08] text-4xl md:text-6xl">
+                  {c.pre && <>{c.pre} </>}
+                  {c.em && c.rest ? (
+                    <>
+                      <em className="not-italic text-[#84bf52]">{c.em}</em> {c.rest}
+                    </>
+                  ) : (
+                    <em className="not-italic text-[#84bf52]">{c.em}</em>
+                  )}
+                </h2>
+              )}
+
+              {c.text && <p className="text-white/80 text-lg mt-5 max-w-md">{c.text}</p>}
+
+              {c.cta && (
+                <button
+                  onClick={() => go('#projects')}
+                  className="su-more text-white mt-8"
+                >
+                  <span className="su-ln !bg-[#84bf52]" /> {c.cta}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* scroll hint */}
+        <div className="absolute bottom-8 inset-x-0 flex justify-center z-10">
+          <div className="w-[1px] h-12 bg-white/40 relative overflow-hidden">
+            <div className="absolute top-0 w-full h-4 bg-white/90 animate-[suScroll_1.8s_ease-in-out_infinite]" />
           </div>
-        </motion.div>
+        </div>
       </div>
-    </section>
+
+      <style>{`@keyframes suScroll{0%{transform:translateY(-100%)}100%{transform:translateY(300%)}}`}</style>
+    </div>
   );
 }

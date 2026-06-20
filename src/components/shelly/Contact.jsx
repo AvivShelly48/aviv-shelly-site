@@ -1,28 +1,17 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Loader2, CheckCircle2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, CheckCircle2 } from 'lucide-react';
 
 const interests = [
   { value: 'urban_renewal', label: 'התחדשות עירונית' },
   { value: 'affordable_housing', label: 'מחיר למשתכן' },
   { value: 'construction', label: 'בנייה למגורים' },
-  { value: 'landowner', label: 'בעל קרקע / מגרש' },
+  { value: 'landowner', label: 'עצמאות · יבנה' },
   { value: 'other', label: 'אחר' },
 ];
 
-const details = [
-  { icon: Phone, label: 'טלפון', value: '000-000-0000' },
-  { icon: Mail, label: 'דוא״ל', value: 'info@shelly.co.il' },
-  { icon: MapPin, label: 'משרד', value: 'רחוב הדוגמה 1, ישראל' },
-  { icon: Clock, label: 'שעות', value: 'א׳–ה׳ · 9:00–18:00' },
-];
-
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', phone: '', email: '', interest: 'other', message: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', interest: 'urban_renewal', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -34,100 +23,76 @@ export default function Contact() {
     setDone(true);
   };
 
+  const field =
+    'w-full bg-transparent border-b border-[var(--su-hair)] py-3 text-[#17151a] placeholder:text-[#a39e95] focus:outline-none focus:border-[#5f9c36] transition-colors';
+
   return (
-    <section id="contact" className="py-24 md:py-32 bg-secondary">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-14">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="text-accent text-sm tracking-[0.2em] uppercase">צור קשר</span>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mt-3 leading-tight">
-              יש לכם מגרש, בניין או חלום?
-            </h2>
-            <p className="text-muted-foreground text-lg mt-5 leading-relaxed">
-              בין אם אתם בעלי דירה בבניין לחידוש, זכאים במחיר למשתכן, או בעלי קרקע — נשמח
-              לשבת, להקשיב ולבנות יחד את הצעד הבא.
-            </p>
+    <section id="contact" className="relative bg-[#f1efea] py-20 md:py-36 px-6">
+      <span className="su-scene-num absolute top-12 md:top-20 left-6 md:left-32">08 — מסירת המפתח</span>
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 lg:gap-20">
+        {/* Left */}
+        <div>
+          <div className="su-eyebrow su-reveal">בואו נתחיל</div>
+          <h2 className="su-serif font-medium leading-[1.08] text-4xl md:text-5xl mt-4 text-[#17151a] su-reveal su-d1">
+            יש לכם מגרש,<br />בניין או <em className="not-italic text-[#5f9c36]">חלום?</em>
+          </h2>
+          <p className="text-[#6b675f] text-lg mt-5 max-w-[46ch] su-reveal su-d2">
+            השאירו פרטים ונחזור אליכם — או דברו איתנו ישירות. כל פנייה מקבלת ליווי אישי.
+          </p>
+          <div className="flex flex-wrap gap-3 mt-8 su-reveal su-d2">
+            <a href="mailto:Office@shellyurban.co.il" className="bg-[#5f9c36] text-white px-6 py-3 rounded-sm hover:bg-[#447327] transition-colors">
+              שלחו מייל
+            </a>
+            <a href="tel:+97288623366" className="border border-[var(--su-hair)] text-[#17151a] px-6 py-3 rounded-sm hover:border-[#5f9c36] transition-colors">
+              08-862-3366
+            </a>
+          </div>
+        </div>
 
-            <div className="grid sm:grid-cols-2 gap-5 mt-10">
-              {details.map((d) => (
-                <div key={d.label} className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-primary/10 text-primary rounded-sm flex items-center justify-center shrink-0">
-                    <d.icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">{d.label}</div>
-                    <div className="text-foreground font-medium">{d.value}</div>
-                  </div>
-                </div>
-              ))}
+        {/* Form */}
+        <div className="su-reveal su-d1">
+          {done ? (
+            <div className="h-full flex flex-col items-center justify-center text-center py-16 border border-[var(--su-hair)] rounded-sm bg-white">
+              <CheckCircle2 className="w-14 h-14 text-[#5f9c36] mb-4" />
+              <h3 className="su-serif text-2xl font-bold text-[#17151a]">תודה, קיבלנו!</h3>
+              <p className="text-[#6b675f] mt-2">נחזור אליכם בהקדם.</p>
             </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="bg-card border border-border rounded-sm p-8"
-          >
-            {done ? (
-              <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                <CheckCircle2 className="w-14 h-14 text-primary mb-4" />
-                <h3 className="font-display text-2xl font-bold text-foreground">תודה, קיבלנו!</h3>
-                <p className="text-muted-foreground mt-2">נחזור אליכם בהקדם.</p>
+          ) : (
+            <form onSubmit={submit} className="space-y-5 bg-white border border-[var(--su-hair)] rounded-sm p-8">
+              <div>
+                <label className="text-xs text-[#6b675f]">שם מלא</label>
+                <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="ישראל ישראלי" className={field} />
               </div>
-            ) : (
-              <form onSubmit={submit} className="space-y-4">
-                <Input
-                  required
-                  placeholder="שם מלא"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                />
-                <Input
-                  required
-                  placeholder="טלפון"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                />
-                <Input
-                  type="email"
-                  placeholder="דוא״ל (אופציונלי)"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
-                <Select value={form.interest} onValueChange={(v) => setForm({ ...form, interest: v })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="תחום עניין" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {interests.map((i) => (
-                      <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Textarea
-                  placeholder="ספרו לנו בקצרה..."
-                  className="h-28"
-                  value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
-                />
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3.5 rounded-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
-                >
-                  {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5" />}
-                  שליחה
-                </button>
-              </form>
-            )}
-          </motion.div>
+              <div>
+                <label className="text-xs text-[#6b675f]">טלפון</label>
+                <input required type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="050-000-0000" className={field} />
+              </div>
+              <div>
+                <label className="text-xs text-[#6b675f]">דוא״ל <span className="text-[#a39e95]">(לקבלת אישור)</span></label>
+                <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="name@example.com" className={field} />
+              </div>
+              <div>
+                <label className="text-xs text-[#6b675f]">תחום מעניין</label>
+                <select value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })} className={field}>
+                  {interests.map((i) => (
+                    <option key={i.value} value={i.value}>{i.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs text-[#6b675f]">הודעה</label>
+                <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="ספרו לנו במה נוכל לעזור…" className={`${field} h-24 resize-none`} />
+              </div>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#5f9c36] text-white py-3.5 rounded-sm font-medium hover:bg-[#447327] transition-colors disabled:opacity-60"
+              >
+                {submitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                שליחה
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </section>
