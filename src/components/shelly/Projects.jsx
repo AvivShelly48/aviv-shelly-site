@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
 
 const HAR_AVITAL = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/cad236d07_day-web.jpg';
+const INDEPENDENCE = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/226f7232d_render-independence.jpg';
+const MICHAEL = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/54724a415_render-michael.jpg';
 const KEREN = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/d6298c8c4_proj-keren.jpg';
 const TZIYONUT = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/f095f1f51_proj-142.jpg';
 const LILAC = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/f816a27b4_proj-lilac.jpg';
@@ -10,8 +12,10 @@ const SHAAREI = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/p
 const projects = [
   { title: 'הר אביטל', city: 'מגדל מגורים בוטיק', status: 'בשיווק', img: HAR_AVITAL, big: true,
     desc: 'פרויקט הדגל שלנו — חזית פחם אלגנטית ומרפסות מרחפות. תאורת LED לינארית מדגישה כל קומה; בלילה הבניין זוהר.' },
-  { title: 'קרן היסוד · מתחם הצעירים', city: 'אשדוד', status: 'בשיווק', img: KEREN, big: true,
-    desc: 'התחדשות עירונית — 144 יחידות דיור חדשות לצד 144 דירות מתחדשות, בבניין בן 7 קומות.' },
+  { title: 'עצמאות · פינוי-בינוי', city: 'יבנה', status: 'בביצוע', img: INDEPENDENCE, big: true,
+    desc: 'פרויקט פינוי-בינוי בלב יבנה — חידוש מתחם מגורים שלם, דירות חדשות ומרחב ציבורי מתחדש.' },
+  { title: 'מיכאל', city: 'מתחם מגורי יוקרה', status: 'בשיווק', img: MICHAEL },
+  { title: 'קרן היסוד · מתחם הצעירים', city: 'אשדוד', status: 'בשיווק', img: KEREN },
   { title: 'הציונות 10 · סיטי פארק', city: 'אשדוד', status: 'בשיווק', img: TZIYONUT },
   { title: 'הלילך', city: 'יבנה', status: 'בשיווק', img: LILAC },
   { title: 'שערי העיר · רובע 9', city: 'אשדוד', status: 'בתכנון', img: SHAAREI },
