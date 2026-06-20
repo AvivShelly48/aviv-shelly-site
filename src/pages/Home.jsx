@@ -1,21 +1,25 @@
+import useReveal from '@/hooks/useReveal';
 import Navbar from '@/components/shelly/Navbar';
 import Hero from '@/components/shelly/Hero';
-import Domains from '@/components/shelly/Domains';
 import Projects from '@/components/shelly/Projects';
-import FromField from '@/components/shelly/FromField';
-import About from '@/components/shelly/About';
+import Execution from '@/components/shelly/Execution';
+import Stats from '@/components/shelly/Stats';
+import Partners from '@/components/shelly/Partners';
 import Contact from '@/components/shelly/Contact';
 import Footer from '@/components/shelly/Footer';
 
 export default function Home() {
+  useReveal();
+
   return (
-    <div dir="rtl" className="min-h-screen bg-background">
+    <div dir="rtl" className="min-h-screen bg-[#f1efea]">
+      <div className="su-grain" />
       <Navbar />
       <Hero />
-      <Domains />
       <Projects />
-      <FromField />
-      <About />
+      <Execution />
+      <Stats />
+      <Partners />
       <Contact />
       <Footer />
     </div>
