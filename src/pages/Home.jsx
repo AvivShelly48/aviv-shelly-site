@@ -5,8 +5,8 @@ import Projects from '@/components/shelly/Projects';
 import Execution from '@/components/shelly/Execution';
 import Stats from '@/components/shelly/Stats';
 import Partners from '@/components/shelly/Partners';
-import Contact from '@/components/shelly/Contact';
-import Footer from '@/components/shelly/Footer';
+import Contact from '@/components/shelly/Contact.jsx';
+import Footer from '@/components/shelly/Footer.jsx';
 
 export default function Home() {
   useReveal();
