@@ -63,29 +63,20 @@
     "title": "מיכאל",
     "location": "מתחם מגורי יוקרה",
     "cat": "build",
-    "sale": "בשיווק",
-    "stage": 2,
-    "image": "assets/uploads/render-michael.jpg",
-    "gallery": [
-      "assets/uploads/render-michael.jpg",
-      "assets/uploads/render-tower.jpg"
-    ],
-    "description": "מתחם מגורים יוקרתי — שלושה מגדלי בוטיק לבנים הניצבים בלב פארק מטופח. אדריכלות נקייה ועכשווית, מרפסות מוצלות ושפע ירק, בסטנדרט בנייה גבוה במיוחד ובאיכות חסרת פשרות — מהתכנון ועד מסירת המפתח.",
+    "sale": "בתכנון",
+    "stage": 1,
+    "image": "assets/uploads/render-tower.jpg",
+    "description": "מתחם מגורים יוקרתי בסטנדרט בנייה גבוה במיוחד — אדריכלות נקייה ועכשווית, מרפסות מרווחות ואיכות חסרת פשרות, מהתכנון ועד מסירת המפתח. פרטים מלאים והדמיות יפורסמו בקרוב.",
     "facts": [
       {
         "k": "build",
-        "v": "3",
-        "l": "מגדלי מגורים"
-      },
-      {
-        "k": "park",
-        "v": "פארק",
-        "l": "מרחב ירוק"
+        "v": "בוטיק",
+        "l": "מגדל מגורים"
       },
       {
         "k": "key",
-        "v": "בוטיק",
-        "l": "סטנדרט יוקרה"
+        "v": "יוקרה",
+        "l": "סטנדרט בנייה"
       }
     ],
     "featured": false,
@@ -95,7 +86,7 @@
     "title": "קרן היסוד · מתחם הצעירים",
     "location": "אשדוד",
     "cat": "renewal",
-    "sale": "בשיווק",
+    "sale": "בביצוע",
     "stage": 2,
     "image": "assets/proj-keren.jpg",
     "description": "מתחם התחדשות עירונית בלב אשדוד — 144 יחידות דיור חדשות לצד 144 דירות ותיקות המתחדשות, בבניין בן 7 קומות. דיור איכותי ונגיש לצעירים, עם מרחב ציבורי וקהילתי מתחדש.",
@@ -123,7 +114,7 @@
     "title": "הציונות 10 · סיטי פארק",
     "location": "אשדוד",
     "cat": "sale",
-    "sale": "בשיווק",
+    "sale": "בביצוע",
     "stage": 2,
     "image": "assets/proj-142.jpg",
     "description": "פרויקט 'מחיר למשתכן' ייחודי בלב אשדוד — שלושה בנייני מגורים בני 9 קומות מעל שני מפלסי חניה תת-קרקעית. נגישות עירונית, חניה נוחה ואיכות חיים גבוהה.",
@@ -145,14 +136,19 @@
       }
     ],
     "featured": false,
-    "order": 4
+    "order": 4,
+    "gallery": [
+      "assets/proj-142.jpg",
+      "assets/uploads/render-michael.jpg",
+      "assets/uploads/render-interior.jpg"
+    ]
   },
   {
     "title": "הלילך",
     "location": "יבנה",
     "cat": "renewal",
-    "sale": "בשיווק",
-    "stage": 2,
+    "sale": "אוכלס",
+    "stage": 3,
     "image": "assets/proj-lilac.jpg",
     "description": "פרויקט התחדשות עירונית במרכז יבנה — חידוש מתחם מגורים ותיק לכדי בניין חדש ומודרני, עם ליווי דיירים מלא לאורך כל הדרך, מהתכנון ועד המסירה.",
     "facts": [
@@ -173,7 +169,12 @@
       }
     ],
     "featured": false,
-    "order": 5
+    "order": 5,
+    "gallery": [
+      "assets/proj-lilac.jpg",
+      "assets/proj-lilac5.jpg",
+      "assets/proj-lilac3.jpg"
+    ]
   },
   {
     "title": "שערי העיר · רובע 9",
@@ -181,7 +182,7 @@
     "cat": "build",
     "sale": "בתכנון",
     "stage": 1,
-    "image": "assets/proj-independence.jpg",
+    "image": "assets/exec-crane.jpg",
     "description": "מתחם מגורים ותעסוקה ברובע 9 באשדוד — כ-240 יחידות דיור לצד פארק תעסוקה עם משרדים ומסחר. שכונה חדשה שמשלבת מגורים, עבודה ופנאי תחת קורת גג אחת.",
     "facts": [
       {
