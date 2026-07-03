@@ -782,15 +782,26 @@
 <script>
 (function(){
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* HERO mode: embedding canvases (like the Base44 Builder) hijack the wheel and
-     stretch the frame to the full page height, so scroll-scrubbing is impossible.
-     Inside any iframe the cinema auto-plays its chapters instead of scrubbing.
-     Override for testing: ?hero=1 forces it on, ?hero=0 forces it off. */
+  /* HERO mode: design canvases (like the Base44 Builder editor) stretch the frame
+     to the full page height and hijack the wheel, so there is nothing to scroll and
+     the scrub can never advance. Whenever real scrolling IS possible — the published
+     site, the Builder's interactive preview, any scrollable embed — the full
+     scroll-scrubbed experience stays on. The check is dynamic, because the canvas
+     stretches the frame only after load. ?hero=1 / ?hero=0 force a mode for testing. */
+  var FORCE = /[?&]hero=1/.test(location.search) ? 1 : (/[?&]hero=0/.test(location.search) ? -1 : 0);
   var HERO = false;
-  try { HERO = window.self !== window.top; } catch(e) { HERO = true; }
-  if(/[?&]hero=1/.test(location.search)) HERO = true;
-  if(/[?&]hero=0/.test(location.search)) HERO = false;
-  if(HERO) document.body.classList.add('hero-mode');
+  function scrubPossible(){
+    if(FORCE===1) return false;
+    if(FORCE===-1) return true;
+    /* the Base44 canvas freezes vh units to a reference base — definitive signal */
+    if(document.documentElement.style.getPropertyValue('--base44-reference-vh-base')) return false;
+    /* a viewport far taller than the physical screen means the host stretched the
+       frame to show the whole page at once — nothing scrolls, and a vh-sized
+       spacer would feed the host's height measurement forever */
+    if(screen&&screen.height&&innerHeight>screen.height*1.5) return false;
+    /* if the frame is stretched to (nearly) the whole document, nothing can scroll */
+    return (document.documentElement.scrollHeight - innerHeight) > 160;
+  }
   var skyBg=document.getElementById('skyBg');
   var sun=document.getElementById('skySun');
   var stars=document.getElementById('skyStars');
@@ -840,10 +851,22 @@
      screens, longer on mobile) so the final "ברוכים הבאים הביתה" scene lingers
      fully before the galleries scroll in from below. */
   function endHold(){ return innerWidth<760 ? 1.1 : 0.5; }
+  var cinemaEl=document.getElementById('cinema');
+  /* hero height in px (never vh): a stretched canvas makes 100vh enormous, and a
+     vh-based spacer would feed back into the host's page-height measurement */
+  function heroH(){
+    var f=parseFloat(document.documentElement.style.getPropertyValue('--base44-reference-vh-base'));
+    if(f>0) return f;
+    return Math.min(innerHeight,900);
+  }
   function layout(){
-    /* hero mode: the cinema is a one-screen hero; 100vh (not px) so hosts that
-       freeze vh units to a reference base keep the hero and spacer in sync */
-    if(HERO){ scrollEl.style.height='100vh'; return; }
+    if(HERO){
+      var h=heroH()+'px';
+      if(scrollEl.style.height!==h) scrollEl.style.height=h;
+      if(cinemaEl.style.height!==h) cinemaEl.style.height=h;
+      return;
+    }
+    if(cinemaEl.style.height) cinemaEl.style.height='';
     scrollEl.style.height=((SCREENS+endHold())*innerHeight)+'px';
   }
   layout();
@@ -929,43 +952,59 @@
      full day→night→lobby journey plays as a film when scrubbing is unavailable */
   var CH_TARGET=[];
   for(var t2=0;t2<SCENES;t2++) CH_TARGET.push((STOPS[t2]+STOPS[t2+1])/2);
-  function heroPlay(){
-    var idx=0, from=CH_TARGET[0], to=CH_TARGET[0], start=-1;
-    var GLIDE=2800, HOLD=6800;
-    heroP=CH_TARGET[0]; render();
-    function step(ts){
-      if(start>=0){
-        var k=clamp((ts-start)/GLIDE,0,1);
-        var e=k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
-        heroP=from+(to-from)*e;
-        render();
-        if(k>=1) start=-1;
-      }
-      requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-    setInterval(function(){
-      idx=(idx+1)%SCENES;
-      from=heroP; to=CH_TARGET[idx]; start=performance.now();
+  var GLIDE=2800, HOLD=6800;
+  var heroTimer=null, heroAnim=null, heroIdx=0;
+  function startHeroPlay(){
+    if(heroTimer) return;
+    unlockVideo();
+    heroIdx=0; heroAnim=null; heroP=CH_TARGET[0]; render();
+    heroTimer=setInterval(function(){
+      heroIdx=(heroIdx+1)%SCENES;
+      heroAnim={from:heroP,to:CH_TARGET[heroIdx],start:performance.now()};
     },HOLD);
+  }
+  function stopHeroPlay(){
+    if(heroTimer){ clearInterval(heroTimer); heroTimer=null; }
+    heroAnim=null;
+  }
+  (function heroStep(ts){
+    if(HERO&&heroAnim){
+      var k=clamp((ts-heroAnim.start)/GLIDE,0,1);
+      var e=k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
+      heroP=heroAnim.from+(heroAnim.to-heroAnim.from)*e;
+      render();
+      if(k>=1) heroAnim=null;
+    }
+    requestAnimationFrame(heroStep);
+  })(0);
+
+  /* pick the mode now and keep watching — the canvas reshapes the frame after load */
+  function evalMode(){
+    var hero=!scrubPossible();
+    if(hero===HERO) return;
+    HERO=hero;
+    document.body.classList.toggle('hero-mode',hero);
+    layout();
+    activeScene=-1;
+    if(hero){ startHeroPlay(); }
+    else { stopHeroPlay(); requestRender(); }
   }
 
   if(reduce){
-    if(HERO){ heroP=CH_TARGET[0]; render(); return; }
+    if(!scrubPossible()){
+      HERO=true; document.body.classList.add('hero-mode'); layout();
+      heroP=CH_TARGET[0]; render(); return;
+    }
     scrollEl.style.height='0';
     chapters.forEach(function(c,i){c.classList.toggle('live', i===0);});
     render();
     return;
   }
-  if(HERO){
-    unlockVideo();
-    heroPlay();
-    addEventListener('resize',function(){ layout(); },{passive:true});
-    return;
-  }
   /* capture-phase listener also catches scrolls of wrapping containers */
   document.addEventListener('scroll',requestRender,{passive:true,capture:true});
-  addEventListener('resize',function(){ layout(); requestRender(); },{passive:true});
+  addEventListener('resize',function(){ layout(); evalMode(); requestRender(); },{passive:true});
+  setInterval(function(){ evalMode(); if(HERO) layout(); },700);
+  evalMode();
   render();
 })();
 </script>
