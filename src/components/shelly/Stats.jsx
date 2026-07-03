@@ -3,8 +3,8 @@ import SceneHead from './SceneHead';
 
 const stats = [
   { to: 535, suffix: '', lab: 'יח״ד נבנו עד היום' },
-  { to: 202, suffix: '', lab: 'יח״ד בתכנון' },
-  { to: 232, suffix: '', lab: 'יח״ד בשיווק' },
+  { to: 412, suffix: '', lab: 'יח״ד בתכנון' },
+  { to: 247, suffix: '', lab: 'יח״ד בשיווק' },
 ];
 
 function Counter({ to, suffix }) {
