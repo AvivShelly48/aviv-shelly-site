@@ -214,8 +214,8 @@
     "cat": "commercial",
     "sale": "בתכנון",
     "stage": 1,
-    "image": "assets/exec-done.jpg",
-    "description": "מרכז מסחרי שכונתי בבאר גנים שבחוף אשקלון — שטחי מסחר וחנויות לרווחת תושבי היישוב והסביבה. בשלבי תכנון והקמה. פרטים יפורסמו בקרוב.",
+    "image": "assets/uploads/beer-ganim-1.jpg",
+    "description": "SHELLY CENTER — מרכז מסחרי שכונתי פתוח בבאר גנים שבחוף אשקלון: חנויות, בתי קפה ורחבה ציבורית מוצלת, לרווחת תושבי היישוב והסביבה.",
     "facts": [
       {
         "k": "park",
@@ -229,6 +229,12 @@
       }
     ],
     "featured": false,
-    "order": 9
+    "order": 9,
+    "gallery": [
+      "assets/uploads/beer-ganim-1.jpg",
+      "assets/uploads/beer-ganim-4.jpg",
+      "assets/uploads/beer-ganim-2.jpg",
+      "assets/uploads/beer-ganim-3.jpg"
+    ]
   }
 ]
