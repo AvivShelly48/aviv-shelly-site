@@ -3,19 +3,15 @@ import { MapPin } from 'lucide-react';
 
 const HAR_AVITAL = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/cad236d07_day-web.jpg';
 const INDEPENDENCE = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/226f7232d_render-independence.jpg';
-const MICHAEL = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/54724a415_render-michael.jpg';
 const KEREN = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/d6298c8c4_proj-keren.jpg';
 const TZIYONUT = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/f095f1f51_proj-142.jpg';
 const LILAC = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/f816a27b4_proj-lilac.jpg';
-const SHAAREI = 'https://base44.app/api/apps/6a2ff9d8f0f6cef4ef4c3d65/files/mp/public/6a2ff9d8f0f6cef4ef4c3d65/38805d621_proj-independence.jpg';
 
 const grid = [
-  { title: 'עצמאות · פינוי-בינוי', loc: 'יבנה', status: 'בביצוע', img: INDEPENDENCE, stats: ['202 יח״ד חדשות', '3 מגדלי מגורים'] },
-  { title: 'מיכאל', loc: 'מתחם מגורי יוקרה', status: 'בשיווק', img: MICHAEL, stats: ['3 מגדלי מגורים', 'פארק מרחב ירוק'] },
-  { title: 'קרן היסוד · מתחם הצעירים', loc: 'אשדוד', status: 'בשיווק', img: KEREN, stats: ['144 דירות מתחדשות', '138 דירות חדשות'] },
-  { title: 'הציונות 10 · סיטי פארק', loc: 'אשדוד', status: 'בשיווק', img: TZIYONUT, stats: ['9 קומות', '3 בנייני מגורים'] },
-  { title: 'הלילך', loc: 'יבנה', status: 'בשיווק', img: LILAC, stats: ['6 בניינים ברחוב', 'תמ״א 38 + פינוי-בינוי'] },
-  { title: 'שערי העיר · רובע 9', loc: 'אשדוד', status: 'בתכנון', img: SHAAREI, stats: ['כ-240 יח״ד', 'מגורים + תעסוקה'] },
+  { title: 'עצמאות · פינוי-בינוי', loc: 'יבנה', status: 'בתכנון', img: INDEPENDENCE, stats: ['202 יח״ד חדשות', '3 מגדלי מגורים'] },
+  { title: 'קרן היסוד · מתחם הצעירים', loc: 'אשדוד', status: 'בביצוע', img: KEREN, stats: ['144 דירות מתחדשות', '138 דירות חדשות'] },
+  { title: 'הציונות 10 · סיטי פארק', loc: 'אשדוד', status: 'בביצוע', img: TZIYONUT, stats: ['9 קומות', '3 בנייני מגורים'] },
+  { title: 'הלילך', loc: 'יבנה', status: 'אוכלס', img: LILAC, stats: ['6 בניינים ברחוב', 'תמ״א 38 + פינוי-בינוי'] },
 ];
 
 function GridCard({ p, i }) {
