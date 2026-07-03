@@ -1,14 +1,1210 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/manifest.json" />
-    <title>Aviv Shelly — Developer · Builder · Creator</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>שלי אורבן — הר אביטל · חוויה אימרסיבית</title>
+<meta name="description" content="הר אביטל — הבית הבא שלכם. נדל״ן · התחדשות עירונית · בנייה. חוויה אימרסיבית בהשראת Active Theory × Obys." />
+<link rel="icon" href="assets/s-mark-green.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<!-- ⚙️ Base44 data source: set this to the public functions base URL to pull projects/units live.
+     Leave empty to use embedded data. Example:
+     window.SHELLY_BASE44_API = "https://app.base44.com/api/apps/<APP_ID>/functions"; -->
+<script>window.SHELLY_BASE44_API = "";</script>
+
+<style>
+  :root{
+    --bg:#f1efea; --bg2:#ffffff;
+    --ink:#17151a; --ink-dim:#6b675f; --ink-faint:#a39e95;
+    --green:#5f9c36; --green-deep:#447327; --green-bright:#84bf52;
+    --wood:#a8623c; --char:#2c2a30; --concrete:#b6b1a8; --led:#f3d6a0;
+    --hair:rgba(23,21,26,0.12); --hair-soft:rgba(23,21,26,0.07);
+    --serif:"Suez One","Frank Ruhl Libre",serif;
+    --sans:"Assistant",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;
+    -webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;-webkit-tap-highlight-color:transparent;}
+  ::selection{background:rgba(95,156,54,.2);}
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ============ GLOBAL SYSTEMS ============ */
+  .grain{position:fixed;inset:-150%;z-index:95;pointer-events:none;opacity:.045;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation:grain 1.1s steps(3) infinite;}
+  @keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-4%,3%)}66%{transform:translate(3%,-4%)}100%{transform:translate(0,0)}}
+
+  .cur-dot,.cur-ring{position:fixed;top:0;left:0;z-index:99;pointer-events:none;border-radius:50%;transform:translate(-50%,-50%);}
+  .cur-dot{width:7px;height:7px;background:var(--green);mix-blend-mode:multiply;}
+  .cur-ring{width:34px;height:34px;border:1px solid var(--green);opacity:.55;transition:width .3s,height .3s,opacity .3s,background .3s;}
+  .cur-ring.hot{width:54px;height:54px;opacity:1;background:rgba(95,156,54,.08);}
+  body.touch .cur-dot,body.touch .cur-ring{display:none;}
+
+  /* loader */
+  #loader{position:fixed;inset:0;z-index:100;background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transition:opacity .9s ease .15s, visibility .9s ease .15s;}
+  #loader.done{opacity:0;visibility:hidden;pointer-events:none;}
+  #loader::before{content:"";position:absolute;inset:0;opacity:.5;
+    background-image:linear-gradient(var(--hair-soft) 1px,transparent 1px),linear-gradient(90deg,var(--hair-soft) 1px,transparent 1px);
+    background-size:46px 46px;-webkit-mask:radial-gradient(circle at 50% 46%,#000,transparent 70%);mask:radial-gradient(circle at 50% 46%,#000,transparent 70%);}
+  .load-mark{width:46px;margin-bottom:24px;opacity:0;animation:fu 1s ease .1s forwards;position:relative;}
+  .load-word{font-family:var(--serif);font-weight:400;font-size:13px;letter-spacing:.62em;
+    color:var(--ink-dim);margin-bottom:22px;padding-right:.62em;opacity:0;animation:fu 1s ease .25s forwards;position:relative;}
+  .load-bar{width:min(220px,54vw);height:1px;background:var(--hair);position:relative;overflow:hidden;}
+  .load-fill{position:absolute;inset-block:0;right:0;width:0;background:var(--green);}
+  .load-pct{margin-top:14px;font-size:10px;letter-spacing:.34em;color:var(--ink-faint);position:relative;}
+  @keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* nav */
+  #nav{position:fixed;top:0;inset-inline:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+    padding:24px clamp(20px,5vw,64px);transition:padding .4s,background .4s,border-color .4s;border-bottom:1px solid transparent;}
+  #nav.shrunk{padding:13px clamp(20px,5vw,64px);background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair-soft);}
+  #nav:not(.shrunk) .brand .bw,#nav:not(.shrunk) .nav-links a{color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.4);}
+  #nav:not(.shrunk) .nav-cta{border-color:rgba(255,255,255,.7);color:#fff;}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .brand img{width:26px;height:auto;}
+  .brand .bw{font-family:var(--serif);font-weight:600;font-size:22px;letter-spacing:.15em;line-height:1;transition:color .4s;}
+  .brand .ub{font-family:var(--sans);font-weight:600;font-size:10px;letter-spacing:.3em;color:var(--green);margin-inline-start:6px;}
+  .nav-links{display:flex;gap:34px;font-size:13.5px;color:var(--ink-dim);}
+  .nav-links a{position:relative;padding-bottom:4px;transition:color .3s;}
+  .nav-links a::after{content:"";position:absolute;bottom:0;right:0;width:0;height:1px;background:var(--green);transition:width .35s;}
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{font-size:13px;border:1px solid var(--ink);padding:9px 18px;border-radius:1px;transition:.3s;}
+  .nav-cta:hover{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important;}
+  .nav-cb{position:absolute;width:1px;height:1px;opacity:0;margin:-1px;pointer-events:none;}
+  .nav-toggle{display:none;width:34px;height:34px;border:1px solid var(--hair);border-radius:3px;background:rgba(255,255,255,.6);position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .nav-toggle span{position:absolute;inset-inline:8px;height:1.5px;background:var(--ink);}
+  .nav-toggle span:nth-child(1){top:11px;}.nav-toggle span:nth-child(2){top:16px;}.nav-toggle span:nth-child(3){top:21px;}
+
+  .pad{padding-inline:clamp(20px,7vw,140px);}
+  .eyebrow{font-size:12px;letter-spacing:.32em;color:var(--green);font-weight:600;display:flex;align-items:center;gap:12px;}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--green);display:inline-block;}
+
+  /* ============ CINEMA — crisp building cutout, only the sky changes around it ============ */
+  .cinema{position:fixed;inset:0;z-index:5;overflow:hidden;pointer-events:none;background:#1a2740;
+    opacity:0;transition:opacity 1s ease;--acc:#f3d6a0;}
+  body.ready .cinema{opacity:1;}
+  /* sky — colours interpolated by scroll (day → golden → sunset → dusk) */
+  .sky-bg{position:absolute;inset:0;background:linear-gradient(180deg,#4a86c4 0%,#9cc0de 52%,#e2edf2 100%);}
+  .sky-sun{position:absolute;width:38vmax;height:38vmax;border-radius:50%;filter:blur(4px);
+    transform:translate(-50%,-50%);will-change:left,top,opacity;
+    background:radial-gradient(circle,rgba(255,250,235,.95) 0%,rgba(255,238,200,.5) 26%,rgba(255,220,170,0) 62%);}
+  .sky-stars{position:absolute;inset:0;opacity:0;will-change:opacity;
+    background-image:radial-gradient(1.4px 1.4px at 12% 18%,#fff,transparent),radial-gradient(1.2px 1.2px at 28% 32%,#fff,transparent),radial-gradient(1.6px 1.6px at 42% 12%,#fff,transparent),radial-gradient(1.1px 1.1px at 57% 26%,#fff,transparent),radial-gradient(1.5px 1.5px at 68% 16%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 34%,#fff,transparent),radial-gradient(1.3px 1.3px at 88% 22%,#fff,transparent),radial-gradient(1.1px 1.1px at 8% 40%,#fff,transparent),radial-gradient(1.4px 1.4px at 35% 46%,#fff,transparent),radial-gradient(1.2px 1.2px at 63% 42%,#fff,transparent);}
+  /* the high-resolution building — constant and sharp */
+  .bld{position:absolute;bottom:-2vh;left:0;right:auto;height:108vh;z-index:1;will-change:transform,opacity;
+    transform:translateX(-46%);transform-origin:48% 78%;filter:drop-shadow(0 40px 64px rgba(8,12,24,.42));}
+  .bld img{height:100%;width:auto;display:block;}
+  .bld .bld-night{position:absolute;top:0;left:0;right:auto;opacity:0;will-change:opacity;}
+  /* live footage: walking in through the glass entrance, scrubbed by scroll */
+  .cino-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;
+    opacity:0;will-change:opacity;pointer-events:none;}
+  /* legibility scrim + soft vignette over the bright lobby, behind the caption */
+  .cino-lobby{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;will-change:opacity;
+    background:
+      linear-gradient(to right, rgba(10,8,14,0) 52%, rgba(10,8,14,.5) 100%),
+      radial-gradient(130% 120% at 50% 44%, rgba(8,6,14,0) 50%, rgba(8,6,14,.6) 100%);}
+
+  .cino-chapters{position:absolute;inset:0;z-index:5;pointer-events:none;color:#fff;}
+  .cino-chapters.on-light{color:#1b1922;}
+  .cchap{position:absolute;inset:0;opacity:0;transition:opacity .8s cubic-bezier(.4,0,.2,1);}
+  .cchap.live{opacity:1;}
+  .cchap a,.cchap button{pointer-events:auto;}
+  /* captions sit high on the sky beside the building and POP in on scroll */
+  .cpanel{position:absolute;inset-inline-start:clamp(20px,7vw,110px);top:30%;transform:translateY(-30%);max-width:min(42vw,470px);}
+  .cino-chapters:not(.on-light) .cpanel{text-shadow:0 2px 24px rgba(0,0,0,.4);}
+  .cpanel>*{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.85,.25,1),transform .8s cubic-bezier(.2,.85,.25,1);}
+  .cchap.live .cpanel>*{opacity:1;transform:none;}
+  .cchap.live .cpanel>*:nth-child(1){transition-delay:.05s}
+  .cchap.live .cpanel>*:nth-child(2){transition-delay:.13s}
+  .cchap.live .cpanel>*:nth-child(3){transition-delay:.21s}
+  .cchap.live .cpanel>*:nth-child(4){transition-delay:.29s}
+  .cpanel .ce{margin-bottom:18px;}
+  .cpanel h1{font-family:var(--serif);font-weight:500;line-height:1.04;font-size:clamp(36px,5vw,80px);letter-spacing:-.01em;}
+  .cpanel h1 em,.cpanel h2 em,.cpanel .big b{font-style:normal;color:var(--acc);}
+  .cpanel h2{font-family:var(--serif);font-weight:500;line-height:1.1;font-size:clamp(27px,3.6vw,50px);}
+  .cpanel .big{font-family:var(--serif);font-weight:400;line-height:1.2;font-size:clamp(24px,3.3vw,48px);}
+  .cpanel .ctext{margin-top:20px;color:inherit;opacity:.92;font-size:clamp(15px,1.4vw,17px);max-width:40ch;}
+  .cpanel .ctext b{color:var(--acc)!important;}
+  .cpanel .ccta{margin-top:30px;display:inline-flex;align-items:center;gap:13px;font-size:14px;letter-spacing:.05em;color:inherit;}
+  .cpanel .ccta .ln2{width:46px;height:1px;background:var(--acc);transition:width .4s;}
+  .cpanel .ccta:hover .ln2{width:74px;}
+  .cpanel .dnum{font-family:var(--serif);font-size:13px;letter-spacing:.3em;color:var(--acc);margin-bottom:14px;}
+  .cpanel .led-bars{display:flex;gap:6px;margin-top:20px;max-width:240px;}
+  .cpanel .led-bars i{height:2px;flex:1;background:var(--acc);opacity:.85;}
+
+  .cino-rail{position:absolute;inset-inline-end:24px;top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;gap:13px;}
+  .cino-rail i{width:7px;height:7px;border-radius:50%;border:1px solid currentColor;opacity:.4;transition:.35s;color:#fff;}
+  .cino-chapters.on-light ~ .cino-rail i{color:#1b1922;}
+  .cino-rail i.on{opacity:1;background:currentColor;}
+  .cino-count{position:absolute;inset-inline-start:clamp(20px,7vw,110px);top:clamp(86px,13vh,128px);z-index:6;
+    font-family:var(--serif);font-size:13px;letter-spacing:.34em;color:#fff;opacity:.8;text-shadow:0 1px 10px rgba(0,0,0,.3);}
+  .cino-count b{color:var(--acc);font-weight:500;}
+  .cino-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:9px;
+    font-size:10px;letter-spacing:.28em;color:#fff;opacity:.8;transition:opacity .5s;}
+  .cino-cue span{width:1px;height:38px;background:linear-gradient(#fff,transparent);animation:cue 2.4s ease-in-out infinite;}
+  @keyframes cue{0%,100%{opacity:.3;transform:scaleY(.55);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+
+  .cino-scroll{position:relative;z-index:1;width:100%;}
+
+  /* ============ CONTENT ============ */
+  #content{position:relative;z-index:11;}
+  .scene{position:relative;z-index:11;background:var(--bg);scroll-margin-top:clamp(64px,11vw,92px);}
+  .scene-head{max-width:760px;margin-bottom:clamp(40px,6vw,72px);}
+  .scene-head h2{font-family:var(--serif);font-weight:500;line-height:1.08;font-size:clamp(30px,4.4vw,58px);letter-spacing:-.01em;margin-top:18px;}
+  .scene-head h2 em{font-style:normal;color:var(--green);}
+  .scene-head .lead{margin-top:22px;max-width:52ch;color:var(--ink-dim);font-size:clamp(15px,1.4vw,17.5px);}
+  .scene-num{position:absolute;top:clamp(40px,7vw,90px);inset-inline-end:clamp(20px,7vw,140px);font-family:var(--serif);font-size:13px;letter-spacing:.3em;color:var(--ink-dim);}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1);will-change:opacity,transform;}
+  .reveal.in{opacity:1;transform:none;}
+  .d1{transition-delay:.1s}.d2{transition-delay:.2s}
+
+  /* SCENE 04 — PROJECTS */
+  #projects{padding-block:clamp(80px,13vw,160px);}
+  .feat{position:relative;border-radius:6px;overflow:hidden;margin-bottom:clamp(20px,3vw,40px);
+    display:grid;grid-template-columns:1.25fr 1fr;min-height:min(72vh,640px);background:var(--char);cursor:pointer;}
+  .feat .feat-img{position:relative;overflow:hidden;}
+  .feat .feat-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.2,.8,.2,1);}
+  .feat:hover .feat-img img{transform:scale(1.05);}
+  .feat .feat-copy{padding:clamp(30px,4vw,60px);display:flex;flex-direction:column;justify-content:center;color:#fff;background:linear-gradient(180deg,#23222a,#17151a);}
+  .feat .feat-copy .badge{align-self:flex-start;font-size:11px;letter-spacing:.2em;font-weight:600;color:var(--led);border:1px solid rgba(243,214,160,.4);border-radius:2px;padding:5px 11px;}
+  .feat .feat-copy h3{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3.6vw,50px);margin:22px 0 0;line-height:1.05;}
+  .feat .feat-copy .loc{color:rgba(255,255,255,.6);font-size:14px;margin-top:12px;letter-spacing:.04em;}
+  .feat .feat-copy p{color:rgba(255,255,255,.78);font-size:15px;margin-top:20px;max-width:42ch;}
+  .feat .feat-copy .more{margin-top:30px;display:inline-flex;align-items:center;gap:13px;font-size:13.5px;letter-spacing:.05em;color:#fff;}
+  .feat .feat-copy .more .ln2{width:42px;height:1px;background:var(--led);transition:width .4s;}
+  .feat:hover .feat-copy .more .ln2{width:70px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:clamp(18px,2vw,28px);}
+  /* inviting soft cards: image on top, light info panel below */
+  .pcard{position:relative;display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--hair-soft);
+    border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 1px 2px rgba(23,21,26,.04);
+    transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .55s,border-color .55s;}
+  .pcard:hover,.pcard:focus-visible{transform:translateY(-6px);box-shadow:0 26px 50px -26px rgba(23,21,26,.36);border-color:var(--hair);outline:none;}
+  .pcard-img{position:relative;aspect-ratio:16/11;overflow:hidden;background:var(--char);}
+  .pcard-img img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.8,.2,1);}
+  .pcard:hover .pcard-img img{transform:scale(1.06);}
+  .pcard-tag{position:absolute;top:14px;inset-inline-end:14px;font-size:10.5px;letter-spacing:.14em;font-weight:700;
+    color:var(--char);background:var(--led);padding:5px 12px;border-radius:100px;box-shadow:0 6px 16px -8px rgba(0,0,0,.45);}
+  .pcard-body{padding:20px 22px 20px;display:flex;flex-direction:column;flex:1;}
+  .pcard-ttl{font-family:var(--serif);font-weight:500;font-size:23px;line-height:1.15;color:var(--ink);}
+  .pcard-loc{font-size:13.5px;color:var(--ink-dim);margin-top:8px;letter-spacing:.03em;display:flex;align-items:center;gap:7px;}
+  .pcard-loc::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--green);flex:none;}
+  .pcard-facts{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px;}
+  .pcard-facts span{font-size:12px;font-weight:600;color:var(--green-deep);background:rgba(95,156,54,.10);
+    border:1px solid rgba(95,156,54,.18);border-radius:100px;padding:4px 11px;}
+  .pcard-cta{margin-top:auto;padding-top:17px;margin-top:17px;display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--hair-soft);}
+  .pcard-cta b{font-weight:600;font-size:13px;letter-spacing:.03em;color:var(--green);}
+  .pcard-cta i{font-style:normal;font-size:16px;color:var(--green);transition:transform .35s;}
+  .pcard:hover .pcard-cta i{transform:translateX(-6px);}
+
+  .lb{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px);background:rgba(18,16,22,.86);backdrop-filter:blur(10px);opacity:0;transition:opacity .4s;}
+  .lb.on{display:flex;opacity:1;}
+  .lb-card{position:relative;max-width:1040px;width:100%;max-height:90vh;overflow-y:auto;overflow-x:hidden;background:transparent;
+    transform:translateY(22px) scale(.985);transition:transform .55s cubic-bezier(.2,.8,.2,1);scrollbar-width:none;}
+  .lb-card::-webkit-scrollbar{display:none;}
+  .lb.on .lb-card{transform:none;}
+  .lb-card .lb-img{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:var(--char);}
+  .lb-card .lb-img img{width:100%;height:100%;object-fit:cover;}
+  /* floating luxe info card overlapping the image */
+  .lb-card .lb-body{position:relative;z-index:6;width:min(560px,90%);margin:-160px auto 6px;margin-inline-start:clamp(16px,4%,56px);
+    background:var(--bg2);border-radius:18px;padding:clamp(26px,3vw,42px);display:flex;flex-direction:column;
+    box-shadow:0 44px 90px -42px rgba(14,12,20,.62),0 0 0 1px var(--hair-soft);}
+  .lb-card .lb-body .lb-meta .st{font-size:11px;letter-spacing:.16em;font-weight:600;color:var(--green-deep);background:rgba(95,156,54,.14);padding:5px 12px;border-radius:100px;}
+  .lb-card .lb-body h3{font-family:var(--serif);font-weight:500;font-size:clamp(28px,3vw,42px);margin:14px 0 0;line-height:1.04;}
+  .lb-card .lb-body .loc{color:var(--ink-dim);font-size:14px;margin-top:11px;letter-spacing:.04em;}
+  .lb-card .lb-body p{color:var(--ink-dim);font-size:15px;margin-top:18px;line-height:1.7;}
+  .lb-card .lb-body .lb-cta{margin-top:26px;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;
+    background:var(--ink);color:#fff;padding:13px 24px;border-radius:100px;font-size:13.5px;font-weight:600;border:1px solid var(--ink);transition:.3s;}
+  .lb-card .lb-body .lb-cta:hover{background:var(--green);border-color:var(--green);}
+  .lb-close{position:absolute;top:16px;inset-inline-end:16px;z-index:8;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.94);border:none;cursor:pointer;display:grid;place-items:center;font-size:20px;color:var(--ink);box-shadow:0 8px 24px -8px rgba(0,0,0,.5);}
+  /* animated category overlay on the image (differs for renewal vs marketing) */
+  .lb-img{overflow:hidden;}
+  /* lightbox image gallery thumbnails */
+  .lb-thumbs{position:absolute;inset-inline-start:auto;inset-inline-end:0;bottom:0;z-index:4;display:flex;gap:8px;padding:14px;justify-content:flex-end;background:linear-gradient(290deg,rgba(11,12,11,.5),transparent 70%);}
+  .lb-thumbs:empty{display:none;}
+  .lb-thumbs button{width:56px;height:42px;padding:0;border:2px solid transparent;border-radius:4px;overflow:hidden;cursor:pointer;background:none;opacity:.65;transition:opacity .25s,border-color .25s;}
+  .lb-thumbs button img{width:100%;height:100%;object-fit:cover;display:block;}
+  .lb-thumbs button.on{opacity:1;border-color:#fff;}
+  .lb-thumbs button:hover{opacity:1;}
+  .catanim{position:absolute;top:16px;inset-inline-start:16px;z-index:2;display:inline-flex;align-items:center;gap:9px;
+    padding:9px 15px;border-radius:100px;font-size:12.5px;font-weight:600;letter-spacing:.04em;color:#fff;
+    backdrop-filter:blur(6px);background:rgba(20,18,24,.42);border:1px solid rgba(255,255,255,.22);overflow:hidden;}
+  .catanim .ca-lab{position:relative;z-index:2;}
+  .catanim.renewal{border-color:rgba(132,191,82,.55);}
+  .catanim.renewal::before{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(120deg,transparent 20%,rgba(132,191,82,.55) 50%,transparent 80%);
+    transform:translateX(-120%);animation:sweep 2.4s ease-in-out infinite;}
+  @keyframes sweep{0%{transform:translateX(-120%)}55%,100%{transform:translateX(120%)}}
+  .catanim.renewal .ca-ba{position:relative;z-index:2;display:inline-flex;align-items:center;gap:5px;font-size:11px;opacity:.92;}
+  .catanim.renewal .ca-ba b{font-weight:700;}
+  .catanim.renewal .ca-ba .ar{opacity:.7;}
+  .catanim.sale .ca-dot{position:relative;z-index:2;width:9px;height:9px;border-radius:50%;background:var(--led);box-shadow:0 0 0 0 rgba(243,214,160,.7);animation:pulse 1.6s ease-out infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(243,214,160,.6)}70%{box-shadow:0 0 0 11px rgba(243,214,160,0)}100%{box-shadow:0 0 0 0 rgba(243,214,160,0)}}
+  .catanim.build .ca-dot{width:8px;height:8px;border-radius:1px;background:var(--green-bright);transform:rotate(45deg);}
+  .catanim.commercial{border-color:rgba(168,98,60,.5);}
+  .catanim.commercial .ca-dot{width:8px;height:8px;border-radius:1px;background:var(--wood);transform:rotate(45deg);}
+
+  .lb-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .lb-meta .lb-sale{font-size:11px;letter-spacing:.1em;font-weight:600;color:var(--green-deep);border:1px solid rgba(95,156,54,.4);border-radius:2px;padding:3px 9px;}
+  /* fact icons row */
+  .lb-facts{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;}
+  .lb-facts .fact{flex:1 1 0;min-width:88px;border:1px solid var(--hair-soft);border-radius:6px;padding:13px 12px;background:#fff;}
+  .lb-facts .fact svg{width:20px;height:20px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .lb-facts .fact b{display:block;font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.1;margin-top:8px;color:var(--ink);}
+  .lb-facts .fact span{display:block;font-size:11.5px;color:var(--ink-dim);margin-top:2px;letter-spacing:.02em;}
+  /* status progress: רישוי → ביצוע → אכלוס */
+  .lb-status{margin-top:26px;}
+  .lb-status .lb-track{position:relative;height:3px;border-radius:3px;background:var(--hair);overflow:hidden;}
+  .lb-status .lb-track i{position:absolute;inset-block:0;inset-inline-start:0;width:0;background:linear-gradient(90deg,var(--green),var(--green-bright));border-radius:3px;}
+  .lb-status .lb-steps{display:flex;justify-content:space-between;margin-top:11px;}
+  .lb-status .lb-steps span{position:relative;font-size:12px;color:var(--ink-faint);letter-spacing:.04em;padding-top:14px;flex:1;text-align:center;transition:color .4s;}
+  .lb-status .lb-steps span::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:var(--bg);border:1.5px solid var(--hair);transition:.4s;}
+  .lb-status .lb-steps span.on{color:var(--ink);font-weight:500;}
+  .lb-status .lb-steps span.on::before{background:var(--green);border-color:var(--green);box-shadow:0 0 0 4px rgba(95,156,54,.14);}
+
+  /* SCENE 05 — EXECUTION */
+  #execution{padding-block:clamp(80px,13vw,160px);background:linear-gradient(180deg,var(--bg) 0%,#ecebe5 100%);border-top:1px solid var(--hair-soft);}
+  .exec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.8vw,24px);}
+  .exec-card{position:relative;border-radius:5px;overflow:hidden;aspect-ratio:3/4;background:var(--char);}
+  .exec-card img{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.02);transition:transform 1s,filter .5s;}
+  .exec-card:hover img{transform:scale(1.06);}
+  .exec-card .xc{position:absolute;left:0;bottom:0;right:0;padding:20px;color:#fff;background:linear-gradient(0deg,rgba(20,18,24,.8),transparent);}
+  .exec-card .xn{font-family:var(--serif);font-size:13px;letter-spacing:.28em;color:var(--led);}
+  .exec-card .xt{font-family:var(--serif);font-size:20px;font-weight:600;margin-top:6px;}
+  .exec-steps{display:flex;gap:5px;margin-top:clamp(30px,4vw,48px);}
+  .exec-steps i{height:3px;flex:1;background:var(--hair);position:relative;overflow:hidden;}
+  .exec-steps i::after{content:"";position:absolute;inset:0;background:var(--green);transform:scaleX(0);transform-origin:right;transition:transform 1.1s cubic-bezier(.2,.8,.2,1);}
+  .exec-steps.in i::after{transform:scaleX(1);}
+  .exec-steps.in i:nth-child(2)::after{transition-delay:.2s}
+  .exec-steps.in i:nth-child(3)::after{transition-delay:.4s}
+
+  /* SCENE 06 — STATS */
+  #stats{padding-block:clamp(80px,13vw,150px);background:var(--char);color:#fff;}
+  #stats .scene-head h2{color:#fff;}
+  #stats .scene-head .lead{color:rgba(255,255,255,.6);}
+  #stats .scene-num{color:rgba(255,255,255,.6);}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2vw,30px);}
+  .stat{border-top:1px solid rgba(255,255,255,.15);padding-top:24px;}
+  .stat .num{font-family:var(--serif);font-weight:300;font-size:clamp(44px,6vw,86px);line-height:1;letter-spacing:-.02em;}
+  .stat .num em{font-style:normal;color:var(--green-bright);}
+  .stat .lab{margin-top:14px;color:rgba(255,255,255,.62);font-size:14px;letter-spacing:.03em;}
+
+  /* SCENE 07 — PARTNERS */
+  #partners{padding-block:clamp(70px,11vw,130px);}
+  .logos{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(14px,2vw,30px);align-items:center;}
+  .logos a{display:grid;place-items:center;padding:20px 14px;border:1px solid var(--hair-soft);border-radius:4px;transition:transform .4s,border-color .4s,background .4s;}
+  .logos a:hover{transform:translateY(-5px);border-color:var(--hair);background:#fff;}
+  .logos img{max-height:46px;width:auto;filter:grayscale(1) opacity(.55);transition:filter .45s;}
+  .logos a:hover img{filter:grayscale(0) opacity(1);}
+
+  /* SCENE 08 — CONTACT */
+  #contact{padding-block:clamp(80px,13vw,170px);background:linear-gradient(180deg,#ecebe5 0%,var(--bg) 100%);border-top:1px solid var(--hair-soft);}
+  .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,90px);align-items:center;}
+  .contact-l h2{font-family:var(--serif);font-weight:500;font-size:clamp(32px,4.6vw,62px);line-height:1.06;margin-top:18px;}
+  .contact-l h2 em{font-style:normal;color:var(--green);}
+  .contact-l .lead{margin-top:22px;max-width:42ch;color:var(--ink-dim);font-size:16px;}
+  .contact-ch{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .chan{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--ink);padding:12px 20px;border-radius:2px;font-size:14px;transition:.3s;}
+  .chan:hover{background:var(--ink);color:#fff;}
+  .chan.wa{border-color:var(--green-deep);color:var(--green-deep);}
+  .chan.wa:hover{background:var(--green);border-color:var(--green);color:#fff;}
+  .contact-form{background:#fff;border:1px solid var(--hair-soft);border-radius:6px;padding:clamp(26px,3vw,42px);box-shadow:0 40px 90px -54px rgba(23,21,26,.5);}
+  .contact-form .fl{display:block;font-size:12px;letter-spacing:.12em;color:var(--ink-dim);margin:18px 0 7px;}
+  .contact-form .fl:first-child{margin-top:0;}
+  .contact-form input,.contact-form select,.contact-form textarea{width:100%;font-family:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--hair);border-radius:3px;padding:13px 15px;transition:border-color .3s;}
+  .contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{outline:none;border-color:var(--green);}
+  .contact-form textarea{resize:vertical;min-height:84px;}
+  .contact-form .submit{width:100%;margin-top:26px;background:var(--green);color:#fff;border:none;padding:15px;border-radius:3px;font-size:15px;letter-spacing:.04em;transition:background .3s;}
+  .contact-form .submit:hover{background:var(--green-deep);}
+  .contact-form .note{margin-top:14px;font-size:11.5px;color:var(--ink-faint);text-align:center;}
+
+  /* FOOTER */
+  .foot{position:relative;z-index:11;background:var(--char);color:rgba(255,255,255,.6);padding:clamp(48px,7vw,80px) clamp(20px,7vw,140px) 40px;}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:30px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.12);}
+  .foot .flogo{height:58px;width:auto;display:block;margin-bottom:12px;filter:invert(1);mix-blend-mode:screen;opacity:.92;}
+  .foot .fbrand{font-family:var(--serif);font-weight:600;font-size:24px;letter-spacing:.14em;color:#fff;}
+  .foot .fbrand span{color:var(--green-bright);font-family:var(--sans);font-size:11px;letter-spacing:.3em;margin-inline-start:8px;}
+  .foot .fcols{display:flex;gap:clamp(34px,6vw,80px);flex-wrap:wrap;font-size:14px;}
+  .foot .fcols a{display:block;padding:5px 0;transition:color .3s;}
+  .foot .fcols a:hover{color:#fff;}
+  .foot .fcols h5{color:#fff;font-weight:500;font-size:12px;letter-spacing:.16em;margin-bottom:10px;}
+  .foot-bot{padding-top:26px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:rgba(255,255,255,.6);}
+  .foot .fsocial{display:flex;gap:10px;margin-top:16px;}
+  .foot .fsocial a{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;transition:.25s;}
+  .foot .fsocial a:hover{background:var(--green);border-color:var(--green);transform:translateY(-2px);}
+  .foot .fsocial svg{width:18px;height:18px;fill:currentColor;}
+
+  /* ---- availability board ---- */
+  .avail-filter{display:flex;flex-wrap:wrap;gap:9px;margin:30px 0 24px;}
+  .avail-filter button{font-family:inherit;font-size:13px;font-weight:500;color:var(--ink-dim);background:var(--bg2);
+    border:1px solid var(--hair);border-radius:100px;padding:8px 16px;cursor:pointer;transition:.25s;}
+  .avail-filter button:hover{border-color:var(--green);color:var(--green-deep);}
+  .avail-filter button.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .avail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:20px;}
+  .unit-card{background:var(--bg2);border:1px solid var(--hair-soft);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
+    box-shadow:0 1px 2px rgba(23,21,26,.04);transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s;}
+  .unit-card:hover{transform:translateY(-5px);box-shadow:0 24px 46px -26px rgba(23,21,26,.32);}
+  .unit-img{position:relative;aspect-ratio:16/11;overflow:hidden;background:var(--char);}
+  .unit-img img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.8,.2,1);}
+  .unit-card:hover .unit-img img{transform:scale(1.06);}
+  .unit-badge{position:absolute;inset-block-start:10px;inset-inline-start:10px;font-size:11.5px;font-weight:700;
+    padding:5px 11px;border-radius:100px;backdrop-filter:blur(4px);}
+  .unit-badge.available{background:rgba(95,156,54,.92);color:#fff;}
+  .unit-badge.reserved{background:rgba(243,196,90,.95);color:#5b4410;}
+  .unit-badge.sold{background:rgba(120,116,124,.92);color:#fff;}
+  .unit-card.sold .unit-img img{filter:grayscale(.85) opacity(.7);}
+  .unit-body{padding:16px 17px 18px;display:flex;flex-direction:column;flex:1;}
+  .unit-proj{font-size:11.5px;color:var(--green-deep);font-weight:600;letter-spacing:.02em;}
+  .unit-title{font-family:var(--serif);font-weight:500;font-size:20px;margin-top:4px;}
+  .unit-meta{font-size:13px;color:var(--ink-dim);margin-top:6px;line-height:1.7;}
+  .unit-price{margin-top:10px;font-size:16px;font-weight:600;color:var(--ink);}
+  .unit-btn{margin-top:14px;width:100%;border:none;border-radius:9px;padding:11px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:.25s;}
+  .unit-btn.go{background:var(--green-deep);color:#fff;}
+  .unit-btn.go:hover{background:#2f5417;}
+  .unit-btn.off{background:#efece6;color:var(--ink-faint);cursor:default;}
+  .avail-note{margin-top:22px;font-size:12px;color:var(--ink-faint);}
+  @media(max-width:560px){.avail-grid{grid-template-columns:1fr 1fr;gap:12px;} .unit-title{font-size:17px;} .unit-body{padding:12px;}}
+
+  @media(max-width:980px){
+    .nav-links,.nav-cta{display:none;}
+    .nav-toggle{display:block;}
+    #nav .nav-cb:checked ~ .nav-links{display:flex;flex-direction:column;gap:0;z-index:2;
+      position:absolute;top:100%;inset-inline:0;background:#fff;
+      border-bottom:1px solid var(--hair);box-shadow:0 24px 40px -22px rgba(23,21,26,.34);padding:6px 0;}
+    #nav .nav-cb:checked ~ .nav-links a{color:var(--ink)!important;font-size:16px;padding:15px clamp(20px,5vw,40px);
+      border-bottom:1px solid var(--hair-soft);text-shadow:none!important;}
+    #nav .nav-cb:checked ~ .nav-links a::after{display:none;}
+    #nav .nav-cb:checked ~ .nav-cta{display:block;color:#fff;text-align:center;margin:14px clamp(20px,5vw,40px) 4px;}
+    #nav .nav-cb:checked ~ .nav-toggle{background:#fff;}
+    #nav .nav-cb:checked ~ .nav-toggle span:nth-child(1){top:16px;transform:rotate(45deg);}
+    #nav .nav-cb:checked ~ .nav-toggle span:nth-child(2){opacity:0;}
+    #nav .nav-cb:checked ~ .nav-toggle span:nth-child(3){top:16px;transform:rotate(-45deg);}
+    .nav-toggle span{transition:transform .3s,opacity .2s,top .3s;}
+    .cino-rail{inset-inline-end:14px;gap:10px;}
+    .bld{height:74vh;left:0;right:auto;bottom:-1vh;}
+    .cpanel{inset-inline:clamp(18px,6vw,40px);max-width:none;top:10vh;transform:none;}
+    .cino-count{display:none;}
+    .feat{grid-template-columns:1fr;min-height:0;}
+    .feat .feat-img{aspect-ratio:16/11;}
+    .grid,.exec-grid{grid-template-columns:1fr 1fr;}
+    .stat-grid{grid-template-columns:1fr 1fr;gap:34px 20px;}
+    .logos{grid-template-columns:repeat(3,1fr);}
+    .lb-card{max-height:92vh;}
+    .lb-card .lb-img{aspect-ratio:4/3;}
+    .lb-card .lb-body{width:auto;margin:-72px 14px 6px;padding:24px 22px;}
+    .contact-wrap{grid-template-columns:1fr;gap:44px;}
+  }
+  @media(max-width:560px){
+    .grid,.exec-grid{grid-template-columns:1fr;}
+    .logos{grid-template-columns:repeat(2,1fr);}
+    /* gentler, quicker reveals on phone */
+    .reveal{transform:translateY(16px);transition-duration:.7s;}
+    .d1{transition-delay:.07s}.d2{transition-delay:.14s}
+    /* comfortable spacing + readable heads */
+    #projects{padding-block:clamp(56px,14vw,120px);}
+    .scene-head{margin-bottom:clamp(28px,7vw,48px);}
+    .avail-grid{grid-template-columns:1fr;gap:14px;}
+    .avail-filter{margin:20px 0 16px;}
+    .unit-title{font-size:20px;}
+    .cta,.lead{border-radius:16px;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .grain,.cino-cue span,.catanim.renewal::before,.catanim.sale .ca-dot{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<span id="top"></span>
+<div class="grain"></div>
+<div class="cur-ring" id="curRing"></div>
+<div class="cur-dot" id="curDot"></div>
+
+<!-- Loader -->
+<div id="loader">
+  <img class="load-mark" src="assets/s-mark-green.png" alt="" />
+  <div class="load-word">SHELLY URBAN</div>
+  <div class="load-bar"><div class="load-fill" id="loadFill"></div></div>
+  <div class="load-pct"><span id="loadPct">0</span> / 100</div>
+</div>
+
+<!-- Nav -->
+<nav id="nav">
+  <input type="checkbox" id="navCb" class="nav-cb" aria-label="פתיחת תפריט ניווט" />
+  <a class="brand" href="#top"><img src="assets/s-mark-green.png" alt="שלי אורבן" /><span class="bw">SHELLY<span class="ub">GROUP</span></span></a>
+  <div class="nav-links" id="navLinks">
+    <a href="#projects">פרויקטים</a>
+    <a href="#availability">דירות זמינות</a>
+    <a href="mishtaken.html">מחיר למשתכן</a>
+    <a href="about.html">אודות</a>
+    <a href="#execution">מהשטח</a>
+    <a href="#stats">ניסיון</a>
+    <a href="#contact">צור קשר</a>
+  </div>
+  <a class="nav-cta" data-hot href="#contact">דברו איתנו</a>
+  <label class="nav-toggle" for="navCb" aria-hidden="true"><span></span><span></span><span></span></label>
+</nav>
+
+<!-- ============ CINEMA — scroll-scrubbed video ============ -->
+<div class="cinema" id="cinema">
+  <div class="sky-bg" id="skyBg"></div>
+  <div class="sky-sun" id="skySun"></div>
+  <div class="sky-stars" id="skyStars"></div>
+  <div class="bld" id="bld">
+    <img class="bld-day" id="bldDay" src="assets/building/day.webp" alt="הר אביטל — הדמיה" />
+    <img class="bld-night" id="bldNight" src="assets/building/night.webp" alt="" />
+  </div>
+  <video class="cino-video" id="cinoVideo" muted playsinline preload="auto"
+         poster="assets/uploads/lobby-entrance.jpg" aria-hidden="true">
+    <source src="assets/uploads/lobby-walk.mp4" type="video/mp4" />
+  </video>
+  <div class="cino-lobby" id="cinoLobby"></div>
+
+  <div class="cino-chapters" id="cinoChapters">
+    <!-- 1 · Day -->
+    <div class="cchap" data-ch="0">
+      <div class="cpanel">
+        <div class="eyebrow ce">נדל״ן · התחדשות עירונית · בנייה</div>
+        <h1>כאן ייבנה<br><em>הבית הבא שלכם.</em></h1>
+        <a href="#projects" class="ccta" data-hot><span class="ln2"></span> גלו את הפרויקטים</a>
+      </div>
+    </div>
+    <!-- 2 · Golden hour -->
+    <div class="cchap" data-ch="1">
+      <div class="cpanel">
+        <div class="dnum">01</div>
+        <h2><em>יוקרה</em> רואים.</h2>
+        <p class="ctext">בכל פרט — בחזית, בלובי ובמרפסת.</p>
+      </div>
+    </div>
+    <!-- 3 · Sunset -->
+    <div class="cchap" data-ch="2">
+      <div class="cpanel">
+        <div class="dnum">02</div>
+        <h2><em>מצוינות</em> מרגישים.</h2>
+        <p class="ctext">בגימור, בחומרים ובאיכות הבנייה.</p>
+      </div>
+    </div>
+    <!-- 4 · Dusk / approaching the entrance -->
+    <div class="cchap" data-ch="3">
+      <div class="cpanel">
+        <div class="dnum">03</div>
+        <h2><em>ביטחון</em> חשים.</h2>
+        <p class="ctext">ליווי מלא — מהתכנון ועד מסירת המפתח.</p>
+      </div>
+    </div>
+    <!-- 5 · Lobby (inside) -->
+    <div class="cchap" data-ch="4">
+      <div class="cpanel">
+        <div class="dnum">הלובי · קומת הכניסה</div>
+        <h2>ברוכים הבאים <em>הביתה.</em></h2>
+        <p class="ctext">כאן מתחילים החיים החדשים שלכם.</p>
+        <a href="#projects" class="ccta" data-hot><span class="ln2"></span> כנסו לפרויקטים</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cino-rail" id="cinoRail"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="cino-count">פרק <b id="cinoCount">01</b> · 05</div>
+  <div class="cino-cue" id="cinoCue"><span></span>גלילה</div>
+</div>
+
+<!-- spacer providing the scrub scroll length (set by JS) -->
+<div class="cino-scroll" id="cinoScroll"></div>
+
+<!-- ============ CONTENT ============ -->
+<div id="content">
+
+  <section class="scene pad" id="projects">
+    <span class="scene-num">04 — העיר</span>
+    <div class="scene-head">
+      <div class="eyebrow reveal">הפרויקטים שלנו · ברחבי הארץ</div>
+      <h2 class="reveal d1">עיר שלמה <em>של בתים</em><br>שכבר קוראים להם בית.</h2>
+      <p class="lead reveal d2">כל בניין הוא סיפור. לחצו על פרויקט כדי להתקרב — לראות את ההדמיה, המיקום והסטטוס.</p>
+    </div>
+    <article class="feat reveal" data-project="feat" data-hot>
+      <div class="feat-img"><img src="assets/har-avital/day-web.jpg" alt="הר אביטל" /></div>
+      <div class="feat-copy">
+        <span class="badge">פרויקט הדגל · בשיווק</span>
+        <h3>הר אביטל</h3>
+        <div class="loc">מגדל מגורים בוטיק · שפה אדריכלית עכשווית</div>
+        <p>חזית פחם אלגנטית, עמוד עץ חם ומרפסות מרחפות. תאורת LED לינארית שמדגישה כל קומה — בלילה הבניין זוהר.</p>
+        <span class="more"><span class="ln2"></span> צפו בפרויקט</span>
+      </div>
+    </article>
+    <div class="grid" id="projGrid"></div>
+  </section>
+
+  <!-- ============ AVAILABILITY — what's left ============ -->
+  <section class="scene pad" id="availability">
+    <span class="scene-num">05 — מה נותר</span>
+    <div class="scene-head">
+      <div class="eyebrow reveal">דירות אחרונות · זמינות מתעדכנת</div>
+      <h2 class="reveal d1">אילו דירות <em>עוד נשארו.</em></h2>
+      <p class="lead reveal d2">🟢 פנוי · 🟡 בהמתנה · 🔴 נמכר. מצאתם דירה שמתאימה? שריינו אותה — ונחזור אליכם עם כל הפרטים.</p>
+    </div>
+    <div class="avail-filter reveal" id="availFilter"></div>
+    <div class="avail-grid" id="availGrid"></div>
+    <p class="avail-note reveal" id="availNote"></p>
+  </section>
+
+  <section class="scene pad" id="execution">
+    <span class="scene-num">05 — מהשטח</span>
+    <div class="scene-head">
+      <div class="eyebrow reveal">הבנייה עולה · קומה אחר קומה</div>
+      <h2 class="reveal d1">מהשרטוט <em>אל המנוף</em>.<br>מהמגרש אל הבית.</h2>
+      <p class="lead reveal d2">אנחנו לא רק מתכננים — אנחנו בונים. ניהול ביצוע צמוד בשטח, מהיסודות ועד גמר המעטפת.</p>
+    </div>
+    <div class="exec-grid">
+      <figure class="exec-card reveal"><img src="assets/exec-site.jpg" alt="הכשרת הקרקע" /><figcaption class="xc"><div class="xn">01</div><div class="xt">הקרקע</div></figcaption></figure>
+      <figure class="exec-card reveal d1"><img src="assets/exec-crane.jpg" alt="הבנייה בעיצומה" /><figcaption class="xc"><div class="xn">02</div><div class="xt">המנוף</div></figcaption></figure>
+      <figure class="exec-card reveal d2"><img src="assets/exec-done.jpg" alt="הפרויקט המוגמר" /><figcaption class="xc"><div class="xn">03</div><div class="xt">המסירה</div></figcaption></figure>
+    </div>
+    <div class="exec-steps reveal"><i></i><i></i><i></i></div>
+  </section>
+
+  <section class="scene pad" id="stats">
+    <span class="scene-num">06 — מספרים</span>
+    <div class="scene-head">
+      <div class="eyebrow reveal">המספרים מאחורי המסע</div>
+      <h2 class="reveal d1">ניסיון שנמדד <em>בבתים מאוכלסים.</em></h2>
+    </div>
+    <div class="stat-grid">
+      <div class="stat reveal"><div class="num" data-count="15">0<em>+</em></div><div class="lab">שנות ניסיון</div></div>
+      <div class="stat reveal d1"><div class="num" data-count="1200">0<em>+</em></div><div class="lab">יחידות דיור</div></div>
+      <div class="stat reveal d2"><div class="num" data-count="18">0</div><div class="lab">פרויקטים</div></div>
+      <div class="stat reveal d2"><div class="num" data-count="900">0<em>+</em></div><div class="lab">משפחות בבית חדש</div></div>
+    </div>
+  </section>
+
+  <section class="scene pad" id="partners">
+    <span class="scene-num">07 — שותפים</span>
+    <div class="scene-head">
+      <div class="eyebrow reveal">עובדים מול הגופים המובילים</div>
+      <h2 class="reveal d1">אמון <em>שנבנה לאורך שנים.</em></h2>
+    </div>
+    <div class="logos reveal">
+      <a href="#contact"><img src="assets/p-rmi.png" alt="רשות מקרקעי ישראל" /></a>
+      <a href="#contact"><img src="assets/p-shikun.png" alt="משרד הבינוי והשיכון" /></a>
+      <a href="#contact"><img src="assets/p-otzar.png" alt="משרד האוצר" /></a>
+      <a href="#contact"><img src="assets/p-mahir.png" alt="מחיר למשתכן" /></a>
+      <a href="#contact"><img src="assets/p-leumi.png" alt="בנק לאומי" /></a>
+      <a href="#contact"><img src="assets/p-mizrahi.png" alt="מזרחי טפחות" /></a>
+    </div>
+  </section>
+
+  <section class="scene pad" id="contact">
+    <span class="scene-num">08 — מסירת המפתח</span>
+    <div class="contact-wrap">
+      <div class="contact-l">
+        <div class="eyebrow reveal">בואו נתחיל</div>
+        <h2 class="reveal d1">יש לכם מגרש,<br>בניין או <em>חלום?</em></h2>
+        <p class="lead reveal d2">השאירו פרטים ונחזור אליכם — או דברו איתנו ישירות. כל פנייה מקבלת ליווי אישי.</p>
+        <div class="contact-ch reveal d2">
+          <a class="chan wa" href="mailto:Office@shellyurban.co.il" data-hot>שלחו מייל</a>
+          <a class="chan" href="tel:+97288623366" data-hot>08-862-3366</a>
+        </div>
+      </div>
+      <form class="contact-form reveal d1" id="leadForm">
+        <label class="fl" for="lf-name">שם מלא</label>
+        <input id="lf-name" name="name" type="text" autocomplete="name" required placeholder="ישראל ישראלי" />
+        <label class="fl" for="lf-phone">טלפון</label>
+        <input id="lf-phone" name="phone" type="tel" autocomplete="tel" required placeholder="050-000-0000" />
+        <label class="fl" for="lf-email">דוא״ל <span style="color:var(--ink-faint);font-weight:400;">(לקבלת אישור)</span></label>
+        <input id="lf-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" />
+        <label class="fl" for="lf-project">פרויקט מעניין</label>
+        <select id="lf-project" name="project">
+          <option value="">כללי / עדיין בודק</option>
+          <option>עצמאות · פינוי-בינוי, יבנה</option>
+          <option>קרן היסוד · מתחם הצעירים, אשדוד</option>
+          <option>הציונות 10 · סיטי פארק, אשדוד (מחיר למשתכן)</option>
+          <option>הלילך, יבנה</option>
+          <option>מיכאל</option>
+          <option>שערי העיר · רובע 9, אשדוד</option>
+          <option>הר אביטל</option>
+        </select>
+        <label class="fl" for="lf-rooms">מספר חדרים</label>
+        <select id="lf-rooms" name="rooms">
+          <option value="">גמיש / לא משנה</option>
+          <option>3 חדרים</option>
+          <option>4 חדרים</option>
+          <option>5 חדרים</option>
+          <option>5+ · פנטהאוז · דירת גן</option>
+        </select>
+        <label class="fl" for="lf-budget">טווח תקציב</label>
+        <select id="lf-budget" name="budget">
+          <option value="">להגדרה בשיחה</option>
+          <option>מחיר למשתכן (זכאי/ת)</option>
+          <option>עד 1.5 מ׳ ₪</option>
+          <option>1.5–2 מ׳ ₪</option>
+          <option>2–2.5 מ׳ ₪</option>
+          <option>מעל 2.5 מ׳ ₪</option>
+        </select>
+        <label class="fl" for="lf-timeline">מתי מתכננים לרכוש</label>
+        <select id="lf-timeline" name="timeline">
+          <option value="">עדיין בודק/ת</option>
+          <option>מיידי — מוכן/ה להתקדם</option>
+          <option>בתוך 3–6 חודשים</option>
+          <option>במהלך השנה</option>
+          <option>אוסף/ת מידע בלבד</option>
+        </select>
+        <label class="fl" for="lf-msg">הודעה (לא חובה)</label>
+        <textarea id="lf-msg" name="message" placeholder="ספרו לנו במה נוכל לעזור…"></textarea>
+        <button class="submit" type="submit" data-hot>שליחה</button>
+        <div class="note">השליחה פותחת את תוכנת המייל עם הפרטים, מוכנים לשליחה ל-Office@shellyurban.co.il</div>
+      </form>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-top">
+      <div>
+        <div class="fbrand">SHELLY<span>GROUP</span></div>
+        <p style="margin-top:14px;max-width:34ch;font-size:14px;">נדל״ן · התחדשות עירונית · בנייה — מהתכנון ועד מסירת המפתח, תחת קורת גג אחת.</p>
+        <div class="fsocial">
+          <a href="#" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.12 1.38C1.36 2.67.95 3.34.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.8.72 1.47 1.38 2.13.66.66 1.33 1.07 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.8-.31 1.47-.72 2.13-1.38.66-.66 1.07-1.33 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.7 5.7 0 0 0-1.38-2.12A5.7 5.7 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zm6.41-10.4a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/></svg></a>
+          <a href="#" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.02 4.39 11.01 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8v8.44C19.61 23.08 24 18.09 24 12.07z"/></svg></a>
+          <a href="#" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+        </div>
+      </div>
+      <div class="fcols">
+        <div><h5>ניווט</h5><a href="#projects">פרויקטים</a><a href="#availability">דירות זמינות</a><a href="about.html">אודות</a><a href="team.html">הצוות</a><a href="#contact">צור קשר</a></div>
+        <div><h5>תחומים</h5><a href="renewal.html">התחדשות עירונית</a><a href="development.html">ייזום ובנייה</a><a href="contracting.html">ביצוע קבלנות בניין</a><a href="mishtaken.html">מחיר למשתכן</a></div>
+        <div><h5>קשר</h5><a href="tel:+97288623366">08-862-3366</a><a href="mailto:Office@shellyurban.co.il">Office@shellyurban.co.il</a><a href="accessibility.html">הצהרת נגישות</a></div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© <span id="yr"></span> שלי אורבן · כל הזכויות שמורות</span>
+      <span>חוויה אימרסיבית בהשראת Active Theory × Obys</span>
+    </div>
+  </footer>
+
+</div><!-- /#content -->
+
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <div class="lb-card">
+    <button class="lb-close" id="lbClose" aria-label="סגירה">×</button>
+    <div class="lb-img"><img id="lbImg" alt="" /><div id="lbCatWrap"></div><div class="lb-thumbs" id="lbThumbs"></div></div>
+    <div class="lb-body">
+      <div class="lb-meta"><span class="st" id="lbCat"></span><span class="lb-sale" id="lbSale"></span></div>
+      <h3 id="lbTitle"></h3>
+      <div class="loc" id="lbLoc"></div>
+      <p id="lbDesc"></p>
+      <div class="lb-facts" id="lbFacts"></div>
+      <div class="lb-status">
+        <div class="lb-track"><i id="lbFill"></i></div>
+        <div class="lb-steps"><span data-s="1">רישוי</span><span data-s="2">ביצוע</span><span data-s="3">אכלוס</span></div>
+      </div>
+      <a class="lb-cta" href="#contact" id="lbCta" data-hot>תיאום סיור / פרטים</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GLOBAL SYSTEMS ============ -->
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var touch  = matchMedia('(hover: none), (pointer: coarse)').matches;
+  if(touch) document.body.classList.add('touch');
+
+  if(!touch){
+    var dot=document.getElementById('curDot'), ring=document.getElementById('curRing');
+    var mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+    addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.transform='translate('+mx+'px,'+my+'px) translate(-50%,-50%)';},{passive:true});
+    (function loop(){rx+=(mx-rx)*.18;ry+=(my-ry)*.18;ring.style.transform='translate('+rx+'px,'+ry+'px) translate(-50%,-50%)';requestAnimationFrame(loop);})();
+    document.querySelectorAll('a,button,[data-hot]').forEach(function(el){
+      el.addEventListener('mouseenter',function(){ring.classList.add('hot');});
+      el.addEventListener('mouseleave',function(){ring.classList.remove('hot');});
+    });
+  }
+
+  /* loader — gated on the image sequence preloading */
+  var loader=document.getElementById('loader'),fill=document.getElementById('loadFill'),pct=document.getElementById('loadPct');
+  var t0=Date.now(), done=false;
+  function finish(){if(done)return;done=true;loader.classList.add('done');document.body.classList.add('ready');startReveals();}
+  window.__loaderFinish=finish;
+  function tick(){
+    var sp = window.__seqProgress ? window.__seqProgress() : Math.min(1,(Date.now()-t0)/1500);
+    var p = Math.round(sp*100);
+    fill.style.width=p+'%'; pct.textContent=p;
+    if((window.__seqReady && p>=100) || (!window.__seqProgress && p>=100) || Date.now()-t0>8000){ setTimeout(finish,300); }
+    else setTimeout(tick, 60);
+  }
+  addEventListener('load',function(){setTimeout(tick,150);});
+  setTimeout(function(){if(!done && Date.now()-t0>1000) tick();},1100);
+
+  var nav=document.getElementById('nav');
+  addEventListener('scroll',function(){nav.classList.toggle('shrunk',scrollY>40);},{passive:true});
+
+  /* mobile menu — pure-CSS checkbox toggle; JS only closes it after use */
+  var navCb=document.getElementById('navCb');
+  var navLinks=document.getElementById('navLinks');
+  if(navCb){
+    navLinks.addEventListener('click',function(e){if(e.target.closest('a'))navCb.checked=false;});
+    var navCta=document.querySelector('.nav-cta');
+    if(navCta)navCta.addEventListener('click',function(){navCb.checked=false;});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')navCb.checked=false;});
+  }
+
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},
+    {threshold:.14,rootMargin:'0px 0px -7% 0px'});
+  window.__observeReveal=function(el){if(reduce){el.classList.add('in');}else{io.observe(el);}};
+  function startReveals(){document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});}
+  if(reduce)document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+
+  if(!touch){document.querySelectorAll('[data-hot]').forEach(function(el){
+    el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();
+      el.style.transform='translate('+((e.clientX-r.left-r.width/2)*.22)+'px,'+((e.clientY-r.top-r.height/2)*.3)+'px)';});
+    el.addEventListener('mouseleave',function(){el.style.transform='';});
+    el.style.transition='transform .3s cubic-bezier(.2,.8,.2,1)';
+  });}
+})();
+</script>
+
+<!-- ============ CINEMA ENGINE — constant building, sky changes with scroll ============ -->
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var skyBg=document.getElementById('skyBg');
+  var sun=document.getElementById('skySun');
+  var stars=document.getElementById('skyStars');
+  var bld=document.getElementById('bld');
+  var bldNight=document.getElementById('bldNight');
+  var bldDay=document.getElementById('bldDay');
+  var chapters=[].slice.call(document.querySelectorAll('.cchap'));
+  var rail=[].slice.call(document.querySelectorAll('#cinoRail i'));
+  var counter=document.getElementById('cinoCount');
+  var cue=document.getElementById('cinoCue');
+  var scrollEl=document.getElementById('cinoScroll');
+  var lobby=document.getElementById('cinoLobby');
+  var video=document.getElementById('cinoVideo');
+  var vidReady=false, vidDur=0, vidUnlocked=false;
+  if(video){
+    video.addEventListener('loadedmetadata',function(){ vidDur=video.duration||0; });
+    video.addEventListener('canplay',function(){ vidReady=true; requestRender(); });
+  }
+  /* iOS/Safari won't let us seek a video until it has been "activated" by a
+     gesture — unlock it on the first interaction so scroll-scrubbing works. */
+  function unlockVideo(){
+    if(vidUnlocked||!video) return; vidUnlocked=true;
+    var pr=video.play();
+    if(pr&&pr.then){ pr.then(function(){ video.pause(); }).catch(function(){}); }
+    else { try{ video.pause(); }catch(e){} }
+  }
+  ['touchstart','pointerdown','wheel','keydown'].forEach(function(ev){
+    addEventListener(ev,unlockVideo,{passive:true,once:true});
+  });
+  var SCENES=chapters.length;            // 5 scenes
+  var SCREENS=4.5;                       // total scroll length, in viewport-heights (room to feel each beat)
+  /* per-chapter scroll boundaries (fractions of total). Each chapter holds one
+     clear, resolved image; the cross-fades happen across the boundaries so the
+     transitions are felt and never land mid-dissolve on a caption. */
+  var STOPS=[0, 0.14, 0.30, 0.50, 0.68, 1.0];
+
+  /* gate the loader on the two building images */
+  var need=2, ready=0;
+  function imgReady(im){ if(im.complete && im.naturalWidth){ready++;} else { im.addEventListener('load',function(){ready++;}); im.addEventListener('error',function(){ready++;}); } }
+  imgReady(bldDay); imgReady(bldNight);
+  window.__seqProgress=function(){return Math.min(1, ready/need);};
+  Object.defineProperty(window,'__seqReady',{get:function(){return ready>=1;}});
+
+  /* The scrub spacer must match the progress denominator (SCREENS*innerHeight)
+     exactly — using svh here broke on mobile, where svh ≠ innerHeight, so the
+     content slid up before progress hit 100%. We also add an end-hold (extra
+     screens, longer on mobile) so the final "ברוכים הבאים הביתה" scene lingers
+     fully before the galleries scroll in from below. */
+  function endHold(){ return innerWidth<760 ? 1.1 : 0.5; }
+  function layout(){ scrollEl.style.height=((SCREENS+endHold())*innerHeight)+'px'; }
+  layout();
+
+  /* time-of-day palettes: top / mid / horizon sky, sun colour+pos+opacity, stars */
+  var P=[
+    {t:[74,134,196],  m:[150,190,221], h:[226,237,242], sc:[255,250,235], sx:80, sy:18, so:.85, st:0},
+    {t:[96,138,186],  m:[198,198,196], h:[246,228,190], sc:[255,236,196], sx:68, sy:36, so:1,   st:0},
+    {t:[104,118,168], m:[227,176,120], h:[247,216,166], sc:[255,224,168], sx:60, sy:50, so:1,   st:.05},
+    {t:[66,58,104],   m:[214,116,84],  h:[244,162,96],  sc:[255,148,88],  sx:49, sy:70, so:.95, st:.25},
+    {t:[18,28,58],    m:[42,56,94],    h:[92,102,140],  sc:[255,140,92],  sx:43, sy:90, so:.35, st:1}
+  ];
+  function clamp(v,a,b){return v<a?a:v>b?b:v;}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function mix(a,b,t){return [Math.round(lerp(a[0],b[0],t)),Math.round(lerp(a[1],b[1],t)),Math.round(lerp(a[2],b[2],t))];}
+  function rgb(c){return 'rgb('+c[0]+','+c[1]+','+c[2]+')';}
+  function smooth(e0,e1,x){var t=clamp((x-e0)/(e1-e0),0,1);return t*t*(3-2*t);}
+
+  var activeScene=-1;
+  function progress(){ var s=window.scrollY||window.pageYOffset||0; return clamp(s/(SCREENS*innerHeight),0,1); }
+  /* which chapter is p in, and how far through it (0..1) — honours STOPS */
+  function chapterAt(p){
+    var ci=0; while(ci<SCENES-1 && p>=STOPS[ci+1]) ci++;
+    var seg=STOPS[ci+1]-STOPS[ci];
+    return {ci:ci, k:seg>0?clamp((p-STOPS[ci])/seg,0,1):0};
+  }
+
+  function render(){
+    var p=progress();
+    /* time-of-day tracks the chapters: each palette stop is reached at its
+       chapter boundary, so the short day chapter means daylight passes quickly,
+       and night is fully set by the time we reach the lobby. */
+    var c=chapterAt(p), i=c.ci, k=c.k, a=P[i], b=P[Math.min(i+1,P.length-1)];
+    var top=mix(a.t,b.t,k), mid=mix(a.m,b.m,k), hor=mix(a.h,b.h,k), sclr=mix(a.sc,b.sc,k);
+    skyBg.style.background='linear-gradient(180deg,'+rgb(top)+' 0%,'+rgb(mid)+' 50%,'+rgb(hor)+' 100%)';
+    var sx=lerp(a.sx,b.sx,k), sy=lerp(a.sy,b.sy,k), so=lerp(a.so,b.so,k), starOp=lerp(a.st,b.st,k);
+    sun.style.left=sx+'vw'; sun.style.top=sy+'vh'; sun.style.opacity=so;
+    sun.style.background='radial-gradient(circle,rgba('+sclr[0]+','+sclr[1]+','+sclr[2]+',.95) 0%,rgba('+sclr[0]+','+sclr[1]+','+sclr[2]+',.45) 26%,rgba('+sclr[0]+','+sclr[1]+','+sclr[2]+',0) 62%)';
+    stars.style.opacity=starOp;
+    /* approach: nudge the exterior in, then cross-fade through the glass
+       entrance into the real lobby footage. Each shot holds fully before the
+       next dissolve begins, so no caption lands on a muddy 50% blend. */
+    var ap=smooth(0.06,0.34,p);
+    var panX=lerp(-52,-30,smooth(0,0.34,p));
+    var scale=1+ap*0.42;                          // gentle push toward the glass before the handoff
+    bld.style.transform='translateX('+panX+'%) scale('+scale+')';
+    bld.style.opacity=1-smooth(0.26,0.40,p);      // exterior holds, then fades by the entrance
+    /* building windows light up toward evening before we step inside */
+    bldNight.style.opacity=smooth(0.10,0.28,p);
+    /* live footage scrubs from the glass entrance into the lobby; it fades in
+       across the ch1→ch2 boundary and the scroll drives its playback head */
+    if(video){
+      video.style.opacity=smooth(0.30,0.44,p);
+      if(vidReady && vidDur){
+        var vt=clamp((p-0.34)/(1-0.34),0,1)*vidDur;
+        if(Math.abs(vt-video.currentTime)>0.02){ try{ video.currentTime=vt; }catch(e){} }
+      }
+    }
+    /* legibility scrim + vignette bloom once we're inside */
+    if(lobby) lobby.style.opacity=smooth(0.44,0.66,p);
+    /* captions POP in: only the active chapter is "live" */
+    var active=i;
+    if(active!==activeScene){
+      activeScene=active;
+      chapters.forEach(function(c,j){ c.classList.toggle('live', j===active); });
+      rail.forEach(function(d,j){ d.classList.toggle('on', j===active); });
+      if(counter) counter.textContent=('0'+(active+1)).slice(-2);
+    }
+    if(cue) cue.style.opacity=p<0.05?1:0;
+  }
+
+  var queued=false;
+  function requestRender(){ if(queued) return; queued=true; requestAnimationFrame(function(){queued=false; render();}); }
+
+  if(reduce){
+    scrollEl.style.height='0';
+    chapters.forEach(function(c,i){c.classList.toggle('live', i===0);});
+    render();
+    return;
+  }
+  addEventListener('scroll',requestRender,{passive:true});
+  addEventListener('resize',function(){ layout(); requestRender(); },{passive:true});
+  render();
+})();
+</script>
+
+<!-- ============ SCENE 04 DATA + INTERACTIONS (Base44-ready) ============ -->
+<script>
+(function(){
+  /* Projects data — shape matches the planned Base44 `Project` entity.
+     Go live by replacing PROJECTS with: await base44.entities.Project.list(); */
+  /* cat: renewal=התחדשות עירונית · sale=מחיר למשתכן · build=בנייה למגורים · commercial=מסחרי
+     stage: 1=רישוי · 2=ביצוע · 3=אכלוס.  Data sourced from shellyurban.co.il */
+  var CAT={renewal:"התחדשות עירונית", sale:"מחיר למשתכן", build:"בנייה למגורים", commercial:"מסחרי"};
+  var PROJECTS = [
+    { title:"עצמאות · פינוי-בינוי", location:"יבנה", cat:"renewal", sale:"בביצוע", stage:2,
+      image:"assets/uploads/render-independence.jpg",
+      gallery:["assets/uploads/render-independence.jpg","assets/uploads/render-interior.jpg"],
+      facts:[{k:"units",v:"202",l:"יח״ד חדשות"},{k:"build",v:"3",l:"מגדלי מגורים"},{k:"park",v:"מסחר",l:"קומת מסחר עירוני"}],
+      description:"פרויקט פינוי-בינוי בלב יבנה — מרכז מסחרי עירוני שמעליו שלושה מגדלי מגורים מודרניים, גינה לרווחת הדיירים וחניון תת-קרקעי רחב. 202 יחידות דיור חדשות בתמהיל מגוון של דירות 4–5–6 חד׳, פנטהאוזים ודירות גן — בנגישות נוחה לצירי תחבורה ולטיילת נחל יבנה." },
+    { title:"מיכאל", location:"מתחם מגורי יוקרה", cat:"build", sale:"בשיווק", stage:2,
+      image:"assets/uploads/render-michael.jpg",
+      gallery:["assets/uploads/render-michael.jpg","assets/uploads/render-tower.jpg"],
+      facts:[{k:"build",v:"3",l:"מגדלי מגורים"},{k:"park",v:"פארק",l:"מרחב ירוק"},{k:"key",v:"בוטיק",l:"סטנדרט יוקרה"}],
+      description:"מתחם מגורים יוקרתי — שלושה מגדלי בוטיק לבנים הניצבים בלב פארק מטופח. אדריכלות נקייה ועכשווית, מרפסות מוצלות ושפע ירק, בסטנדרט בנייה גבוה במיוחד ובאיכות חסרת פשרות — מהתכנון ועד מסירת המפתח." },
+    { title:"קרן היסוד · מתחם הצעירים", location:"אשדוד", cat:"renewal", sale:"בשיווק", stage:2,
+      image:"assets/proj-keren.jpg",
+      facts:[{k:"renew",v:"144",l:"דירות מתחדשות"},{k:"units",v:"138",l:"דירות חדשות"},{k:"build",v:"2",l:"שלבי ביצוע"}],
+      description:"מתחם התחדשות עירונית למשפחות צעירות בלב אשדוד, בשני שלבי ביצוע — שלב א׳: 72 דירות קיימות ו-66 דירות חדשות; שלב ב׳: 72 קיימות ו-72 חדשות. דירות 3–4 חדרים ודירות גג בעיצוב מודרני ובסטנדרט בנייה גבוה, בקרבת פארק אשדוד-ים, האמפי תיאטרון וחופי העיר." },
+    { title:"הציונות 10 · סיטי פארק", location:"אשדוד", cat:"sale", sale:"בשיווק", stage:2,
+      image:"assets/proj-142.jpg",
+      facts:[{k:"floors",v:"9",l:"קומות"},{k:"build",v:"3",l:"בנייני מגורים"},{k:"park",v:"2",l:"מפלסי חניה"}],
+      description:"פרויקט 'מחיר למשתכן' ייחודי בלב אשדוד, בפריים-לוקיישן מול פארק ירוק ומרהיב — שלושה בנייני מגורים בני 9 קומות מעל שני מפלסי חניון תת-קרקעי. דירות מרווחות בתכנון ייחודי עם מפרט מפנק ומתקדם, בסטנדרט בנייה גבוה במיוחד, לזוגות צעירים ולמשפחות." },
+    { title:"הלילך", location:"יבנה", cat:"renewal", sale:"בשיווק", stage:2,
+      image:"assets/proj-lilac.jpg",
+      facts:[{k:"build",v:"6",l:"בניינים ברחוב"},{k:"renew",v:"3+3",l:"תמ״א 38 ופינוי-בינוי"},{k:"key",v:"בוטיק",l:"בנייני מגורים"}],
+      description:"התחדשות של רחוב שלם בלב יבנה — שישה בניינים מודרניים שישנו את פני הרחוב והשכונה: שלושה בתמ״א 38 ושלושה בפינוי-בינוי שבמקומם יוקמו שלושה מגדלי מגורים. בנייני בוטיק בעיצוב נקי ואורבני, סביב גינה ציבורית מטופחת — שילוב מנצח של קהילה, שקט וחיים עירוניים תוססים." },
+    { title:"שערי העיר · רובע 9", location:"אשדוד", cat:"build", sale:"בתכנון", stage:1,
+      image:"assets/proj-independence.jpg",
+      facts:[{k:"units",v:"כ-240",l:"יח״ד"},{k:"build",v:"מגורים",l:"+ תעסוקה"},{k:"park",v:"מסחר",l:"ומשרדים"}],
+      description:"מתחם מגורים ותעסוקה ברובע 9 באשדוד — כ-240 יחידות דיור לצד פארק תעסוקה עם משרדים ומסחר. שכונה חדשה שמשלבת מגורים, עבודה ופנאי תחת קורת גג אחת." }
+  ];
+  var FEATURED = { title:"הר אביטל", location:"מגדל מגורים בוטיק", cat:"build", sale:"בשיווק", stage:2,
+    image:"assets/har-avital/day-web.jpg",
+    facts:[{k:"floors",v:"9",l:"קומות"},{k:"build",v:"בוטיק",l:"מגדל מגורים"},{k:"key",v:"LED",l:"חזית מוארת"}],
+    description:"פרויקט הדגל שלנו — חזית פחם אלגנטית, עמוד עץ חם ומרפסות מרחפות. תאורת LED לינארית מדגישה כל קומה; בלילה הבניין זוהר. שפה אדריכלית עכשווית, מהתכנון ועד מסירת המפתח." };
+
+  var grid=document.getElementById('projGrid');
+  function chips(p){
+    return (p.facts||[]).slice(0,2).map(function(f){
+      return '<span>'+f.v+' '+f.l+'</span>'; }).join('');
+  }
+  function renderProjects(list){
+    grid.innerHTML=list.map(function(p,i){
+      var d=i%3===1?'d1':(i%3===2?'d2':'');
+      return '<article class="pcard reveal '+d+'" data-hot tabindex="0" aria-label="'+p.title+'">'+
+        '<div class="pcard-img"><img src="'+p.image+'" alt="'+p.title+'" loading="lazy" />'+
+        '<span class="pcard-tag">'+(p.sale||CAT[p.cat]||'')+'</span></div>'+
+        '<div class="pcard-body"><div class="pcard-ttl">'+p.title+'</div>'+
+        '<div class="pcard-loc">'+p.location+'</div>'+
+        '<div class="pcard-facts">'+chips(p)+'</div>'+
+        '<div class="pcard-cta"><b>לצפייה בפרויקט</b><i>←</i></div></div></article>';
+    }).join('');
+    grid.querySelectorAll('.pcard').forEach(function(el,i){
+      if(window.__observeReveal) window.__observeReveal(el);
+      el.addEventListener('click',function(){openLB(list[i]);});
+      el.addEventListener('keydown',function(e){if(e.key==='Enter')openLB(list[i]);});
+    });
+  }
+  var lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbTitle=document.getElementById('lbTitle'),
+      lbLoc=document.getElementById('lbLoc'),lbDesc=document.getElementById('lbDesc'),
+      lbCat=document.getElementById('lbCat'),lbSale=document.getElementById('lbSale'),
+      lbFacts=document.getElementById('lbFacts'),lbFill=document.getElementById('lbFill'),
+      lbCatWrap=document.getElementById('lbCatWrap'),
+      lbThumbs=document.getElementById('lbThumbs'),
+      lbSteps=[].slice.call(document.querySelectorAll('.lb-status .lb-steps span'));
+  var ICONS={
+    units:'<svg viewBox="0 0 24 24"><path d="M4 21V5l8-3 8 3v16"/><path d="M9 21v-5h6v5"/><path d="M8 8h.01M12 8h.01M16 8h.01M8 12h.01M16 12h.01"/></svg>',
+    floors:'<svg viewBox="0 0 24 24"><path d="M3 8l9-5 9 5"/><path d="M3 12l9 5 9-5"/><path d="M3 16l9 5 9-5"/></svg>',
+    renew:'<svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>',
+    build:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
+    park:'<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="8" rx="2"/><path d="M6 11V8a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3"/></svg>',
+    key:'<svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="4"/><path d="M11 11l9 9M17 17l2-2"/></svg>'
+  };
+  var curCat='', curTitle='';
+  function openLB(p){
+    lbImg.src=p.image;lbImg.alt=p.title;lbTitle.textContent=p.title;lbLoc.textContent=p.location;lbDesc.textContent=p.description;
+    /* image gallery: show thumbnails when a project has more than one render */
+    var imgs=(p.gallery&&p.gallery.length>1)?p.gallery:[];
+    lbThumbs.innerHTML=imgs.map(function(src,i){
+      return '<button type="button" class="'+(i===0?'on':'')+'" aria-label="תמונה '+(i+1)+'"><img src="'+src+'" alt="" loading="lazy" /></button>';
+    }).join('');
+    [].forEach.call(lbThumbs.children,function(btn,i){
+      btn.addEventListener('click',function(){
+        lbImg.src=imgs[i];
+        [].forEach.call(lbThumbs.children,function(b){b.classList.remove('on');});
+        btn.classList.add('on');
+      });
+    });
+    curCat=CAT[p.cat]||''; curTitle=p.title||'';
+    lbCat.textContent=curCat;
+    lbSale.textContent=p.sale||''; lbSale.style.display=p.sale?'':'none';
+    /* animated category overlay — renewal sweeps old→new, marketing pulses */
+    var cw;
+    if(p.cat==='renewal') cw='<div class="catanim renewal"><span class="ca-lab">'+CAT.renewal+'</span><span class="ca-ba"><b>ישן</b><span class="ar">→</span><b>חדש</b></span></div>';
+    else if(p.cat==='sale') cw='<div class="catanim sale"><span class="ca-dot"></span><span class="ca-lab">בשיווק · מחיר למשתכן</span></div>';
+    else if(p.cat==='commercial') cw='<div class="catanim commercial"><span class="ca-dot"></span><span class="ca-lab">'+CAT.commercial+'</span></div>';
+    else cw='<div class="catanim build"><span class="ca-dot"></span><span class="ca-lab">'+CAT.build+'</span></div>';
+    lbCatWrap.innerHTML=cw;
+    /* fact icons */
+    lbFacts.innerHTML=(p.facts||[]).map(function(f){return '<div class="fact">'+(ICONS[f.k]||ICONS.build)+'<b>'+f.v+'</b><span>'+f.l+'</span></div>';}).join('');
+    /* status bar: רישוי → ביצוע → אכלוס (animate fill on open) */
+    var st=p.stage||1;
+    lbFill.style.transition='none'; lbFill.style.width='0'; void lbFill.offsetWidth;
+    lbFill.style.transition='width 1s cubic-bezier(.2,.8,.2,1) .15s';
+    lbFill.style.width=(st/3*100)+'%';
+    lbSteps.forEach(function(s){ s.classList.toggle('on',(+s.getAttribute('data-s'))<=st); });
+    lb.classList.add('on');document.body.style.overflow='hidden';
+  }
+  function closeLB(){lb.classList.remove('on');document.body.style.overflow='';}
+  document.getElementById('lbClose').addEventListener('click',closeLB);
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLB();});
+  addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();});
+  var lbCta=document.getElementById('lbCta');
+  if(lbCta) lbCta.addEventListener('click',function(){
+    var sel=document.getElementById('lf-project');
+    if(sel&&curTitle){var key=curTitle.split(' · ')[0];
+      for(var o=0;o<sel.options.length;o++){if(sel.options[o].text.indexOf(key)!==-1){sel.selectedIndex=o;break;}}}
+    closeLB();
+  });
+  var featEl=document.querySelector('.feat[data-project="feat"]');
+
+  /* ---- Base44 data layer (graceful: falls back to the static data offline) ----
+     When the Base44 SDK is present (window.base44), projects load from the
+     `Project` entity and the featured card from a record flagged `featured:true`.
+     See /base44 for entity schemas, seed data and the integration guide. */
+  function normalizeProject(r){
+    var facts=r.facts;
+    if(typeof facts==='string'){ try{ facts=JSON.parse(facts); }catch(e){ facts=[]; } }
+    var gallery=r.gallery;
+    if(typeof gallery==='string'){ try{ gallery=JSON.parse(gallery); }catch(e){ gallery=[]; } }
+    return { title:r.title, location:r.location, cat:r.cat, sale:r.sale, stage:+r.stage||1,
+             image:r.image, gallery:gallery||[], description:r.description, facts:facts||[], featured:!!r.featured, order:+r.order||0 };
+  }
+  function projectsFromRows(items){
+    if(!items || !items.length) return null;
+    var all=items.map(normalizeProject).sort(function(a,b){return a.order-b.order;});
+    var feat=all.filter(function(p){return p.featured;})[0];
+    return { list:all.filter(function(p){return !p.featured;}), featured:feat||FEATURED };
+  }
+  function loadProjects(){
+    var api=(window.SHELLY_BASE44_API||"").replace(/\/+$/,"");
+    /* 1) public Base44 function (works on the static site) */
+    if(api){
+      return fetch(api+"/getPublicProjects",{headers:{Accept:"application/json"}})
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(d){ return projectsFromRows(d && (d.projects||d.items||d)); })
+        .catch(function(){ return null; });
+    }
+    /* 2) Base44 SDK (when the site runs inside the Base44 app) */
+    if(window.base44 && base44.entities && base44.entities.Project){
+      return base44.entities.Project.list().then(function(items){ return projectsFromRows(items); }).catch(function(){ return null; });
+    }
+    /* 3) embedded fallback */
+    return Promise.resolve(null);
+  }
+  function initProjects(){
+    loadProjects().then(function(data){
+      if(data){ if(data.featured) FEATURED=data.featured; renderProjects(data.list.length?data.list:PROJECTS); }
+      else { renderProjects(PROJECTS); }
+      if(featEl) featEl.onclick=function(){openLB(FEATURED);};
+    });
+  }
+  initProjects();
+
+  var statIO=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting)return;statIO.unobserve(e.target);
+    var node=e.target,end=+node.getAttribute('data-count'),t0=null,dur=1500;
+    function tk(ts){if(!t0)t0=ts;var k=Math.min((ts-t0)/dur,1);var ease=1-Math.pow(1-k,3);
+      node.firstChild.nodeValue=Math.round(end*ease).toLocaleString('en-US');if(k<1)requestAnimationFrame(tk);}
+    requestAnimationFrame(tk);
+  });},{threshold:.5});
+  document.querySelectorAll('.num[data-count]').forEach(function(n){statIO.observe(n);});
+
+  var stepEl=document.querySelector('.exec-steps');
+  if(stepEl){var sIO=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');sIO.unobserve(e.target);}});},{threshold:.5});sIO.observe(stepEl);}
+
+  var MAIL_TO="Office@shellyurban.co.il";
+  var form=document.getElementById('leadForm');
+  function v(id){var el=document.getElementById(id);return el?el.value.trim():"";}
+  function mailtoLead(d){
+    var subject=encodeURIComponent("ליד מהאתר — "+(d.project||"כללי")+(d.name?(" · "+d.name):""));
+    var body=encodeURIComponent(
+      "שם: "+d.name+"\nטלפון: "+d.phone+(d.email?("\nדוא״ל: "+d.email):"")+
+      "\nפרויקט: "+(d.project||"כללי / עדיין בודק")+
+      "\nחדרים: "+(d.rooms||"גמיש")+
+      "\nתקציב: "+(d.budget||"להגדרה")+
+      "\nאופק רכישה: "+(d.timeline||"בודק")+
+      "\n\nהודעה:\n"+d.message);
+    window.location.href="mailto:"+MAIL_TO+"?subject="+subject+"&body="+body;
+  }
+  if(form) form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var d={name:v('lf-name'),phone:v('lf-phone'),email:v('lf-email'),project:v('lf-project'),
+           rooms:v('lf-rooms'),budget:v('lf-budget'),timeline:v('lf-timeline'),message:v('lf-msg'),source:"website"};
+    var btn=form.querySelector('.submit');
+    /* Lead delivery: 1) Base44 submitLead function · 2) Base44 SDK · 3) mailto fallback */
+    function sendLead(d){
+      var api=(window.SHELLY_BASE44_API||"").replace(/\/+$/,"");
+      if(api){
+        return fetch(api+"/submitLead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)})
+          .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return true; });
+      }
+      if(window.base44 && base44.entities && base44.entities.Lead){
+        return base44.entities.Lead.create(d).then(function(){ return true; });
+      }
+      return Promise.reject(new Error("no-backend"));
+    }
+    if(btn){btn.disabled=true;btn.textContent="שולח…";}
+    sendLead(d)
+      .then(function(){ if(btn){btn.textContent="נשלח ✓";} form.reset(); setTimeout(function(){if(btn){btn.disabled=false;btn.textContent="שליחה";}},2600); })
+      .catch(function(){ if(btn){btn.disabled=false;btn.textContent="שליחה";} mailtoLead(d); });
+  });
+  document.getElementById('yr').textContent=new Date().getFullYear();
+})();
+</script>
+<!-- ============ AVAILABILITY board (Base44 Unit entity, sample fallback) ============ -->
+<script>
+(function(){
+  var SAMPLE=[
+    {project:"הר אביטל", unit:"דירה 12", floor:6, rooms:4, sqm:108, price:2350000, status:"available", image:"assets/har-avital/day-web.jpg"},
+    {project:"עצמאות · פינוי-בינוי, יבנה", unit:"דירה 21", floor:7, rooms:5, sqm:132, price:2640000, status:"available", image:"assets/uploads/render-independence.jpg"},
+    {project:"מיכאל", unit:"פנטהאוז", floor:9, rooms:5, sqm:150, price:3200000, status:"available", image:"assets/uploads/render-michael.jpg"},
+    {project:"הלילך, יבנה", unit:"דירת גן", floor:0, rooms:4, sqm:118, price:2420000, status:"available", image:"assets/proj-lilac.jpg"},
+    {project:"עצמאות · פינוי-בינוי, יבנה", unit:"דירה 8", floor:3, rooms:4, sqm:110, price:2180000, status:"reserved", image:"assets/uploads/render-interior.jpg"},
+    {project:"קרן היסוד · מתחם הצעירים, אשדוד", unit:"דירה 9", floor:4, rooms:3, sqm:88, price:1790000, status:"reserved", image:"assets/proj-keren.jpg"},
+    {project:"הר אביטל", unit:"דירה 4", floor:2, rooms:3, sqm:84, price:1890000, status:"sold", image:"assets/uploads/render-tower.jpg"},
+    {project:"מיכאל", unit:"דירה 6", floor:3, rooms:4, sqm:105, price:2090000, status:"sold", image:"assets/proj-142.jpg"}
+  ];
+  var BADGE={available:["available","🟢 פנוי"],reserved:["reserved","🟡 בהמתנה"],sold:["sold","🔴 נמכר"]};
+  var grid=document.getElementById('availGrid'), filt=document.getElementById('availFilter'), note=document.getElementById('availNote');
+  if(!grid) return;
+  function nis(n){try{return "₪"+Number(n).toLocaleString("he-IL");}catch(e){return "₪"+n;}}
+  function reserve(u){
+    var sel=document.getElementById('lf-project');
+    if(sel){var key=(u.project||'').split(' · ')[0].split(',')[0].trim();
+      for(var o=0;o<sel.options.length;o++){if(sel.options[o].text.indexOf(key)!==-1){sel.selectedIndex=o;break;}}}
+    var msg=document.getElementById('lf-msg');
+    if(msg){var line="מעוניין/ת לשריין: "+u.project+" · "+u.unit+" · קומה "+u.floor+" · "+u.rooms+" חד׳ · ~"+u.sqm+" מ״ר";
+      msg.value=msg.value?(msg.value+"\n"+line):line;}
+    location.hash="#contact";
+    var nm=document.getElementById('lf-name'); if(nm) setTimeout(function(){nm.focus();},400);
+  }
+  function card(u){
+    var b=BADGE[u.status]||BADGE.available, sold=u.status==='sold';
+    var el=document.createElement('article'); el.className='unit-card'+(sold?' sold':'');
+    el.innerHTML=
+      '<div class="unit-img"><img src="'+u.image+'" alt="'+u.project+' '+u.unit+'" loading="lazy" />'+
+        '<span class="unit-badge '+b[0]+'">'+b[1]+'</span></div>'+
+      '<div class="unit-body"><div class="unit-proj">'+u.project+'</div>'+
+        '<div class="unit-title">'+u.unit+'</div>'+
+        '<div class="unit-meta">קומה '+u.floor+' · '+u.rooms+' חדרים · ~'+u.sqm+' מ״ר</div>'+
+        (u.price?'<div class="unit-price">'+(sold?'<s>'+nis(u.price)+'</s>':nis(u.price))+'</div>':'')+
+      '</div>';
+    var btn=document.createElement('button');
+    if(sold){btn.className='unit-btn off';btn.textContent='נמכר';btn.disabled=true;}
+    else{btn.className='unit-btn go';btn.textContent=(u.status==='reserved'?'בקשת מידע · בהמתנה':'שריינו דירה זו');
+      btn.addEventListener('click',function(){reserve(u);});}
+    el.querySelector('.unit-body').appendChild(btn);
+    return el;
+  }
+  function render(list, sample){
+    grid.innerHTML='';
+    var projects=[]; list.forEach(function(u){if(projects.indexOf(u.project)===-1)projects.push(u.project);});
+    filt.innerHTML=''; var current='__all';
+    function paint(){
+      grid.innerHTML='';
+      list.filter(function(u){return current==='__all'||u.project===current;})
+          .forEach(function(u){grid.appendChild(card(u));});
+      Array.prototype.forEach.call(filt.children,function(c){c.classList.toggle('on',c.getAttribute('data-p')===current);});
+    }
+    function chip(label,val){var c=document.createElement('button');c.textContent=label;c.setAttribute('data-p',val);
+      c.addEventListener('click',function(){current=val;paint();});filt.appendChild(c);}
+    chip('הכל','__all'); projects.forEach(function(p){chip(p.split(' · ')[0].split(',')[0],p);});
+    paint();
+    var avail=list.filter(function(u){return u.status==='available';}).length;
+    note.textContent=(sample?'* נתוני המלאי להמחשה — יתחברו אוטומטית למערכת המכירות. ':'')+'כעת '+avail+' דירות פנויות.';
+  }
+  var API=(window.SHELLY_BASE44_API||"").replace(/\/+$/,"");
+  if(API){
+    fetch(API+"/getPublicUnits",{headers:{Accept:"application/json"}})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){ var rows=d&&(d.units||d.items||d); (rows&&rows.length)?render(rows,false):render(SAMPLE,true); })
+      .catch(function(){ render(SAMPLE,true); });
+  } else if(window.base44 && base44.entities && base44.entities.Unit){
+    base44.entities.Unit.list().then(function(rows){
+      if(rows && rows.length) render(rows, false); else render(SAMPLE, true);
+    }).catch(function(){ render(SAMPLE, true); });
+  } else { render(SAMPLE, true); }
+})();
+</script>
+<script src="assets/a11y.js" defer></script>
+</body>
 </html>

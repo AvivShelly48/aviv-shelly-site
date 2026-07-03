@@ -1,6 +1,7 @@
 {
   "name": "Lead",
   "type": "object",
+  "description": "פנייה מטופס יצירת הקשר באתר",
   "properties": {
     "name": {
       "type": "string",
@@ -12,7 +13,7 @@
     },
     "email": {
       "type": "string",
-      "description": "Email address"
+      "description": "Email address (optional) — לשליחת אישור ממותג לפונה"
     },
     "interest": {
       "type": "string",
@@ -26,9 +27,30 @@
       "default": "other",
       "description": "Area of interest"
     },
+    "project": {
+      "type": "string",
+      "description": "פרויקט מעניין (שם הפרויקט הספציפי, או 'כללי')"
+    },
+    "rooms": {
+      "type": "string",
+      "description": "מספר חדרים מבוקש (3/4/5/5+/גמיש)"
+    },
+    "budget": {
+      "type": "string",
+      "description": "טווח תקציב"
+    },
+    "timeline": {
+      "type": "string",
+      "description": "אופק רכישה (מיידי / 3-6 חודשים / השנה / בודק) — מדד 'ליד חם'"
+    },
     "message": {
       "type": "string",
       "description": "Message from the lead"
+    },
+    "source": {
+      "type": "string",
+      "default": "website",
+      "description": "מקור הפנייה"
     }
   },
   "required": [
