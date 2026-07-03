@@ -2,10 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import SceneHead from './SceneHead';
 
 const stats = [
-  { to: 15, suffix: '+', lab: 'שנות ניסיון' },
-  { to: 1200, suffix: '+', lab: 'יחידות דיור' },
-  { to: 18, suffix: '', lab: 'פרויקטים' },
-  { to: 900, suffix: '+', lab: 'משפחות בבית חדש' },
+  { to: 535, suffix: '', lab: 'יח״ד נבנו עד היום' },
+  { to: 202, suffix: '', lab: 'יח״ד בתכנון' },
+  { to: 232, suffix: '', lab: 'יח״ד בשיווק' },
 ];
 
 function Counter({ to, suffix }) {
