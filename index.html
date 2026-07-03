@@ -154,6 +154,12 @@
 
   .cino-scroll{position:relative;z-index:1;width:100%;}
 
+  /* HERO mode — when the page runs inside an embedding canvas (e.g. the Base44
+     Builder) there is no window scrolling to scrub, so the cinema anchors to the
+     top of the page at one viewport height and auto-plays its chapters instead. */
+  body.hero-mode .cinema{position:absolute;inset:auto;top:0;left:0;right:0;height:100vh;}
+  body.hero-mode .cino-cue{display:none;}
+
   /* ============ CONTENT ============ */
   #content{position:relative;z-index:11;}
   .scene{position:relative;z-index:11;background:var(--bg);scroll-margin-top:clamp(64px,11vw,92px);}
@@ -776,6 +782,15 @@
 <script>
 (function(){
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* HERO mode: embedding canvases (like the Base44 Builder) hijack the wheel and
+     stretch the frame to the full page height, so scroll-scrubbing is impossible.
+     Inside any iframe the cinema auto-plays its chapters instead of scrubbing.
+     Override for testing: ?hero=1 forces it on, ?hero=0 forces it off. */
+  var HERO = false;
+  try { HERO = window.self !== window.top; } catch(e) { HERO = true; }
+  if(/[?&]hero=1/.test(location.search)) HERO = true;
+  if(/[?&]hero=0/.test(location.search)) HERO = false;
+  if(HERO) document.body.classList.add('hero-mode');
   var skyBg=document.getElementById('skyBg');
   var sun=document.getElementById('skySun');
   var stars=document.getElementById('skyStars');
@@ -825,7 +840,12 @@
      screens, longer on mobile) so the final "ברוכים הבאים הביתה" scene lingers
      fully before the galleries scroll in from below. */
   function endHold(){ return innerWidth<760 ? 1.1 : 0.5; }
-  function layout(){ scrollEl.style.height=((SCREENS+endHold())*innerHeight)+'px'; }
+  function layout(){
+    /* hero mode: the cinema is a one-screen hero; 100vh (not px) so hosts that
+       freeze vh units to a reference base keep the hero and spacer in sync */
+    if(HERO){ scrollEl.style.height='100vh'; return; }
+    scrollEl.style.height=((SCREENS+endHold())*innerHeight)+'px';
+  }
   layout();
 
   /* time-of-day palettes: top / mid / horizon sky, sun colour+pos+opacity, stars */
@@ -842,8 +862,15 @@
   function rgb(c){return 'rgb('+c[0]+','+c[1]+','+c[2]+')';}
   function smooth(e0,e1,x){var t=clamp((x-e0)/(e1-e0),0,1);return t*t*(3-2*t);}
 
-  var activeScene=-1;
-  function progress(){ var s=window.scrollY||window.pageYOffset||0; return clamp(s/(SCREENS*innerHeight),0,1); }
+  var activeScene=-1, heroP=0;
+  /* progress is measured from the scrub spacer's own position, not window.scrollY,
+     so it keeps working even when scrolling happens on a wrapping container */
+  function progress(){
+    if(HERO) return heroP;
+    var top=scrollEl.getBoundingClientRect().top;
+    var s=top<0?-top:0;
+    return clamp(s/(SCREENS*innerHeight),0,1);
+  }
   /* which chapter is p in, and how far through it (0..1) — honours STOPS */
   function chapterAt(p){
     var ci=0; while(ci<SCENES-1 && p>=STOPS[ci+1]) ci++;
@@ -898,13 +925,46 @@
   var queued=false;
   function requestRender(){ if(queued) return; queued=true; requestAnimationFrame(function(){queued=false; render();}); }
 
+  /* hero auto-play: glide between the visual midpoints of the chapters, so the
+     full day→night→lobby journey plays as a film when scrubbing is unavailable */
+  var CH_TARGET=[];
+  for(var t2=0;t2<SCENES;t2++) CH_TARGET.push((STOPS[t2]+STOPS[t2+1])/2);
+  function heroPlay(){
+    var idx=0, from=CH_TARGET[0], to=CH_TARGET[0], start=-1;
+    var GLIDE=2800, HOLD=6800;
+    heroP=CH_TARGET[0]; render();
+    function step(ts){
+      if(start>=0){
+        var k=clamp((ts-start)/GLIDE,0,1);
+        var e=k<.5 ? 2*k*k : 1-Math.pow(-2*k+2,2)/2;
+        heroP=from+(to-from)*e;
+        render();
+        if(k>=1) start=-1;
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    setInterval(function(){
+      idx=(idx+1)%SCENES;
+      from=heroP; to=CH_TARGET[idx]; start=performance.now();
+    },HOLD);
+  }
+
   if(reduce){
+    if(HERO){ heroP=CH_TARGET[0]; render(); return; }
     scrollEl.style.height='0';
     chapters.forEach(function(c,i){c.classList.toggle('live', i===0);});
     render();
     return;
   }
-  addEventListener('scroll',requestRender,{passive:true});
+  if(HERO){
+    unlockVideo();
+    heroPlay();
+    addEventListener('resize',function(){ layout(); },{passive:true});
+    return;
+  }
+  /* capture-phase listener also catches scrolls of wrapping containers */
+  document.addEventListener('scroll',requestRender,{passive:true,capture:true});
   addEventListener('resize',function(){ layout(); requestRender(); },{passive:true});
   render();
 })();
